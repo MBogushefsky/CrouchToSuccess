@@ -1,0 +1,16 @@
+.progress-spinner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: scale(3);
+}
+
+ion-content {
+  --background: url('./assets/background.png');
+}
+
+ion-input {
+  border: 1px solid gray;
+  border-radius: 10px;
+  background: white !important;
+}

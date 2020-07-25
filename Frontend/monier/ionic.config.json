@@ -1,0 +1,8 @@
+{
+  "name": "Monier",
+  "integrations": {
+    "capacitor": {},
+    "cordova": {}
+  },
+  "type": "angular"
+}

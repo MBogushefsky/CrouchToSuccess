@@ -1,0 +1,65 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Transactions for<ng-container *ngIf="currentBankAccount != null">: {{ currentBankAccount.Name }}</ng-container>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">
+        Transactions for<ng-container *ngIf="currentBankAccount != null">: {{ currentBankAccount.Name }}</ng-container>
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div id="container">
+    <ion-card *ngIf="currentBankAccount != null">
+      <ion-card-header>
+        <ion-card-title>Current Balance: {{ currentBankAccount.CurrentBalance | currency }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let transaction of transactionsToShow">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="9">
+                  <ng-container *ngIf="transaction.MerchantName != null && transaction.MerchantName != ''">
+                    <ion-label>
+                      <h1>{{ transaction.MerchantName }}</h1>
+                      <h2>{{ transaction.Name }}</h2>
+                    </ion-label>
+                  </ng-container>
+                  <ng-container *ngIf="transaction.MerchantName == null || transaction.MerchantName == ''">
+                    <ion-label>
+                      <h1>{{ transaction.Name }}</h1>
+                    </ion-label>
+                  </ng-container>
+                </ion-col>
+                <ion-col size="2">
+                  <ion-label>
+                      <h1>{{ transaction.TransactionDate | date: 'MMMM d, y' }}</h1>
+                  </ion-label>
+                </ion-col>
+                <ion-col size="1">
+                  <ion-label>
+                      <h1>{{ (transaction.CostAmount * -1) | currency }}</h1>
+                  </ion-label>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+            
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </div>
+  <ng-container *ngIf="isLoading">
+    <ion-spinner class="progress-spinner" name="circles"></ion-spinner>
+  </ng-container>
+</ion-content>
