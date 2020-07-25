@@ -1,7 +1,8 @@
 <ion-app>
   <ion-content>
     <ng-container *ngIf="globals.userToken == null && inSignUp == false">
-      <ion-content style="--padding-top: 50px;" class="horiz-verti-center">
+      <ion-content style="--padding-top: 50px;" class="login-area horiz-verti-center">
+        <ion-img src="../assets/HeaderLogo.png"></ion-img>
         <ion-input type="text" (keyup.enter)="login()" [(ngModel)]="usernameInput" placeholder="Username"></ion-input>
         <ion-input type="password" (keyup.enter)="login()" [(ngModel)]="passwordInput" placeholder="Password"></ion-input>
         <ion-button color="primary" (click)="login()" expand="block">Login</ion-button>
@@ -9,7 +10,8 @@
       </ion-content>
     </ng-container>
     <ng-container *ngIf="globals.userToken == null && inSignUp == true">
-      <ion-content style="--padding-top: 50px;" class="horiz-verti-center">
+      <ion-content style="--padding-top: 50px;" class="signup-area horiz-verti-center">
+        <ion-img src="../assets/HeaderLogo.png"></ion-img>
         <ion-input type="text" [(ngModel)]="usernameInput" placeholder="Username"></ion-input>
         <ion-input type="password" [(ngModel)]="passwordInput" placeholder="Password"></ion-input>
         <ion-input type="password" [(ngModel)]="confirmPasswordInput" placeholder="Confirm Password"></ion-input>

@@ -14,3 +14,7 @@ ion-input {
   border-radius: 10px;
   background: white !important;
 }
+
+.login-area ion-input, .signup-area ion-input {
+  margin-bottom: 10px;
+}
