@@ -16,6 +16,7 @@ export class HttpInterceptorService implements HttpInterceptor {
       newHeaders = newHeaders.append('Access-Control-Allow-Origin', '*');
       newHeaders = newHeaders.append('Accept-Language', 'en-US');
       newHeaders = newHeaders.append('Cache-Control', 'no-cache');
+      newHeaders = newHeaders.append('Content-Type', 'application/json');
       newHeaders = newHeaders.append('Pragma', 'no-cache');
       const authReq = req.clone({ headers: newHeaders });
       return next.handle(authReq);

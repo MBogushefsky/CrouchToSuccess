@@ -1,7 +1,9 @@
 ﻿// Credits to https://stackoverflow.com/questions/25855698/how-can-i-retrieve-basic-authentication-credentials-from-the-header
 using Monier.DBModels;
 using Monier.Models;
+using Monier.Plaid;
 using NHibernate;
+using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,31 +68,35 @@ namespace Monier.Controllers
         [HttpPost]
         public void LinkBankAccount([FromBody] string publicToken)
         {
-            /*UserToken userToken = (UserToken)HttpContext.Current.Items["UserToken"];
             using (ISession session = SessionFactory.GetCurrentSession())
             using (ITransaction trans = session.BeginTransaction())
             {
-                try
+                Models.User currentUser = UserController.CheckUserCredentials(session, HttpContext.Current.Request.Headers["Authorization"]);
+                PlaidClient plaidClient = new PlaidClient();
+                string accessToken = plaidClient.ExchangePublicTokenForAccessToken(publicToken);
+                session.Save(new DBModels.AccessToken()
                 {
-                    session.Save(new DBModels.User()
-                    {
-                        ID = Guid.NewGuid(),
-                        Username = user.Username,
-                        PasswordHash = user.PasswordHash,
-                        Email = user.Email,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        PhoneNumber = null,
-                        Admin = false,
-                        AccessToken = null
-                    });
-                    trans.Commit();
-                }
-                catch (Exception e)
-                {
-                    throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent(e.Message) });
-                }
-            }*/
+                    ID = Guid.NewGuid(),
+                    UserID = currentUser.Id,
+                    Token = accessToken
+                });
+                trans.Commit();
+            }
+        }
+
+        [Route("linkBank/{BankAccountID}")]
+        [HttpDelete]
+        public void DeleteLinkedBankAccount([FromUri] Guid BankAccountID)
+        {
+            using (ISession session = SessionFactory.GetCurrentSession())
+            using (ITransaction trans = session.BeginTransaction())
+            {
+                Models.User currentUser = UserController.CheckUserCredentials(session, HttpContext.Current.Request.Headers["Authorization"]);
+                DBModels.BankAccount dbBankAccountToDelete = session.Query<DBModels.BankAccount>().Where(x => x.UserID == currentUser.Id && x.ID == BankAccountID).FirstOrDefault();
+                session.Query<DBModels.BankAccount>().Where(x => x.UserID == currentUser.Id && x.ID == BankAccountID).Delete();
+                session.Query<DBModels.Transaction>().Where(x => x.UserID == currentUser.Id && x.PlaidAccountID == dbBankAccountToDelete.PlaidAccountID).Delete();
+                trans.Commit();
+            }
         }
 
         public static Models.User CheckUserCredentials(ISession session, string authorization)

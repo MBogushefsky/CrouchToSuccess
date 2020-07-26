@@ -1,5 +1,5 @@
 ﻿using Monier.DBModels;
-using Monier.Helper;
+using Monier.Plaid;
 using Monier.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -38,7 +38,7 @@ namespace Monier.Controllers
                     PlaidClient plaidClient = new PlaidClient();
                     string institutionId = null;
                     List<Plaid.Models.BankAccount> pBankAccounts = plaidClient.GetInstitutionBankAccounts(dbAccessToken.Token, out institutionId);
-
+                    institutionId = InstitutionIDToInstitutionName(institutionId);
                     foreach (var pBankAccount in pBankAccounts)
                     {
                         DBModels.BankAccount dbBankAccount = session.Query<DBModels.BankAccount>().Where(x => x.PlaidAccountID == pBankAccount.account_id).FirstOrDefault();
@@ -121,6 +121,53 @@ namespace Monier.Controllers
                 }
                 trans.Commit();
             }
+        }
+
+        private static string InstitutionIDToInstitutionName(string institutionId)
+        {
+            switch (institutionId) {
+                case "ins_1":
+                    return "Bank of America";
+                case "ins_2":
+                    return "BB&T";
+                case "ins_3":
+                    return "Chase";
+                case "ins_4":
+                    return "Wells Fargo";
+                case "ins_5":
+                    return "Citi";
+                case "ins_6":
+                    return "US";
+                case "ins_7":
+                    return "USAA";
+                case "ins_9":
+                    return "Capital One";
+                case "ins_10":
+                    return "American Express";
+                case "ins_11":
+                    return "Schwab";
+                case "ins_13":
+                    return "PNC";
+                case "ins_14":
+                    return "TD";
+                case "ins_15":
+                    return "Navy Federal Credit Union";
+                case "ins_16":
+                    return "SunTrust";
+                case "ins_19":
+                    return "Regions";
+                case "ins_20":
+                    return "Citizens";
+                case "ins_21":
+                    return "Huntington";
+                case "ins_23":
+                    return "BBVA";
+                case "ins_24":
+                    return "Simple";
+                default:
+                    return "Unknown";
+            }
+            
         }
 
         private static void DeleteExistingBankAccountsByUser(ISession session, Guid userId)

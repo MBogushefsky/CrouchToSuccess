@@ -42,27 +42,7 @@ export class AppComponent implements OnInit {
       title: 'Settings',
       url: '/settings',
       icon: 'hammer'
-    }/*,
-    {
-      title: 'Favorites',
-      url: '/folder/Favorites',
-      icon: 'heart'
-    },
-    {
-      title: 'Archived',
-      url: '/folder/Archived',
-      icon: 'archive'
-    },
-    {
-      title: 'Trash',
-      url: '/folder/Trash',
-      icon: 'trash'
-    },
-    {
-      title: 'Spam',
-      url: '/folder/Spam',
-      icon: 'warning'
-    }*/
+    }
   ];
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
@@ -87,6 +67,10 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.isLoading = true;
+    this.initializeLoggedInState();
+  }
+
+  initializeLoggedInState(){
     const path = window.location.pathname.split('/')[1];
     if (path !== undefined) {
       this.selectedPage = '/' + path;
@@ -118,9 +102,11 @@ export class AppComponent implements OnInit {
     this.monierService.getUserByCredentials(this.usernameInput, this.passwordInput).subscribe(
       (data: User) => {
         console.log("USER ID: ", data);
-        this.storage.set('user_token', data);
-        this.globals.userToken = data;
-        this.isLoading = false;
+        this.storage.set('user_token', data).then((val) => {
+          this.globals.userToken = data;
+          this.initializeLoggedInState();
+        });
+        
       },
       (error: HttpErrorResponse) => {
         console.log('Error: ', error.message);
@@ -131,6 +117,16 @@ export class AppComponent implements OnInit {
   }
 
   linkBankAccount() {
+    var linkBankAccountFunction = (publicToken) => {
+      this.monierService.linkBankAccountToUser(publicToken).subscribe(
+          (data: any) => {
+            
+          },
+          (error: HttpErrorResponse) => {
+            console.log('Error: ', error.message);
+          }
+        );
+    }
     var handler = Plaid.create({
       clientName: 'Monier',
       env: 'development',
@@ -140,9 +136,8 @@ export class AppComponent implements OnInit {
         console.log("Plaid Load");
       },
       onSuccess: function (public_token, metadata) {
-
         console.log("Plaid Success: ", public_token);
-
+        linkBankAccountFunction(public_token);
       },
       onExit: function (err, metadata) {
         if (err != null) {
@@ -154,15 +149,16 @@ export class AppComponent implements OnInit {
   }
 
   logout() {
-    this.storage.remove('user_token');
-    this.globals.userToken = null;
+    this.globals.logOut();
   }
 
   signUp() {
     this.isLoading = true;
     console.log("Sign Up");
-    if (this.passwordInput != this.confirmPasswordInput) {
+    if (this.passwordInput !== this.confirmPasswordInput) {
       this.signUpFailed('Passwords don\'t match');
+      this.isLoading = false;
+      return;
     }
     this.signUpUser.Username = this.usernameInput;
     this.signUpUser.PasswordHash = btoa(this.confirmPasswordInput);

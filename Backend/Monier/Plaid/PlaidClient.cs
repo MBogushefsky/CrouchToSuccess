@@ -7,7 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Configuration;
 
-namespace Monier.Helper
+namespace Monier.Plaid
 {
     public class PlaidClient
     {
@@ -56,6 +56,20 @@ namespace Monier.Helper
             });
             var responseBodyJsonObj = JsonConvert.DeserializeObject<JObject>(plaidClient.Execute(request).Content);
             return responseBodyJsonObj["transactions"].ToObject<JArray>();
+        }
+
+        public string ExchangePublicTokenForAccessToken(string publicToken)
+        {
+            var request = new RestRequest("/item/public_token/exchange", Method.POST);
+            request.RequestFormat = DataFormat.Json;
+            request.AddJsonBody(new
+            {
+                client_id = plaidClientId,
+                secret = plaidSecret,
+                public_token = publicToken
+            });
+            var responseBodyJsonObj = JsonConvert.DeserializeObject<JObject>(plaidClient.Execute(request).Content);
+            return responseBodyJsonObj["access_token"].ToObject<string>();
         }
     }
 }

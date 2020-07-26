@@ -125,3 +125,9 @@ C:\Projects\Monier\Backend\Monier\bin\System.Web.Http.Cors.dll
 C:\Projects\Monier\Backend\Monier\bin\System.Web.Http.Cors.xml
 C:\Projects\Monier\Backend\Monier\bin\RestSharp.dll
 C:\Projects\Monier\Backend\Monier\bin\RestSharp.xml
+C:\Projects\Monier\Backend\Monier\bin\MySql.Data.dll
+C:\Projects\Monier\Backend\Monier\bin\Google.Protobuf.dll
+C:\Projects\Monier\Backend\Monier\bin\BouncyCastle.Crypto.dll
+C:\Projects\Monier\Backend\Monier\bin\Renci.SshNet.dll
+C:\Projects\Monier\Backend\Monier\bin\MySql.Data.xml
+C:\Projects\Monier\Backend\Monier\obj\Debug\Monier.csprojAssemblyReference.cache

@@ -62,4 +62,34 @@ export class SettingsComponent implements OnInit {
 
     await alert.present();
   }
+
+  async deleteBankAccountModal(bankAccount: BankAccount) {
+    const alert = await this.alertController.create({
+      header: 'Alert',
+      message: 'This will delete the link to the selected bank account.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Delete',
+          handler: () => {
+            this.monierService.deleteLinkToBankAccount(bankAccount.Id).subscribe(
+              (returnData: any) => {
+              },
+              (error: HttpErrorResponse) => {
+                console.log('Error: ', error.message);
+              }
+            );
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
 }

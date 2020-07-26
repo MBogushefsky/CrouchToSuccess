@@ -130,3 +130,4 @@ C:\Projects\Monier\Backend\Monier\bin\Google.Protobuf.dll
 C:\Projects\Monier\Backend\Monier\bin\BouncyCastle.Crypto.dll
 C:\Projects\Monier\Backend\Monier\bin\Renci.SshNet.dll
 C:\Projects\Monier\Backend\Monier\bin\MySql.Data.xml
+C:\Projects\Monier\Backend\Monier\obj\Release\Monier.csprojAssemblyReference.cache
