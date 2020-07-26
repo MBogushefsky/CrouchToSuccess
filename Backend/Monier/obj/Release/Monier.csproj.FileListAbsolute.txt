@@ -122,7 +122,7 @@ C:\Projects\Monier\Backend\Monier\bin\ru\Microsoft.Build.resources.dll
 C:\Projects\Monier\Backend\Monier\bin\tr\Microsoft.Build.resources.dll
 C:\Projects\Monier\Backend\Monier\bin\zh-Hans\Microsoft.Build.resources.dll
 C:\Projects\Monier\Backend\Monier\bin\zh-Hant\Microsoft.Build.resources.dll
-C:\Projects\Monier\Backend\Monier\obj\Release\Monier.csprojAssemblyReference.cache
 C:\Projects\Monier\Backend\Monier\obj\Release\Monier.csproj.CopyComplete
 C:\Projects\Monier\Backend\Monier\obj\Release\Monier.dll
 C:\Projects\Monier\Backend\Monier\obj\Release\Monier.pdb
+C:\Projects\Monier\Backend\Monier\obj\Release\Monier.csprojAssemblyReference.cache

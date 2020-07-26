@@ -6,7 +6,7 @@ import { User } from '../models/models';
   providedIn: 'root'
 })
 export class MonierService {
-  private apiUrl = 'http://localhost';
+  private apiUrl = 'http://api.bogaware.com';
 
   constructor(private http: HttpClient) { }
 
