@@ -24,10 +24,11 @@
     </ng-container>
     <ng-container *ngIf="globals.userToken != null && !isLoading">
       <ion-split-pane contentId="main-content">
-        <ion-menu contentId="main-content" type="overlay">
-          <ion-content>
-            <ion-list id="inbox-list">
-            <ion-list-header>Welcome {{ globals.userToken.FirstName }} {{ globals.userToken.LastName }}!</ion-list-header>
+        <ion-menu class="main-content" contentId="main-content" type="overlay">
+          <ion-content style="--padding-top: 0px;">
+            <ion-list id="main-menu-list">
+              <ion-img style="width: 150px; height: 75px;" src="../assets/InApplicationLogo.png"></ion-img>
+              <ion-list-header>Welcome {{ globals.userToken.FirstName }} {{ globals.userToken.LastName }}!</ion-list-header>
               <ion-note>{{ globals.userToken.Email }}</ion-note>
               <ion-menu-toggle auto-hide="false">
                 <ion-item *ngFor="let p of appPages; let i = index" (click)="selectedPage = p.url" routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" [class.selected]="selectedPage == p.url">
@@ -53,7 +54,7 @@
                 </ng-container>
                 <ng-container *ngIf="bankAccount.Type == 'credit'">
                   <ion-icon slot="start" name="card"></ion-icon>
-                  <ion-label>{{ bankAccount.Name }} (-{{ bankAccount.CurrentBalance | currency }})</ion-label>
+                  <ion-label>{{ bankAccount.Name }} ({{ bankAccount.CurrentBalance | currency }} To Pay)</ion-label>
                 </ng-container>
               </ion-item>
             </ion-list>
