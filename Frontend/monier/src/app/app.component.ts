@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Platform, AlertController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { Storage } from '@ionic/Storage';
+import { Storage } from '@ionic/storage';
 import { MonierService } from './services/monier.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { User, Transaction, BankAccount } from './models/models';
@@ -95,7 +95,7 @@ export class AppComponent implements OnInit {
     this.storage.get('user_token').then((val) => {
       console.log('Your user token is', val);
       this.globals.userToken = val;
-      if (this.globals.userToken != null){
+      if (this.globals.userToken != null) {
         this.monierService.getAllBankAccounts().subscribe(
           (bankAccounts: BankAccount[]) => {
             this.globals.linkedBankAccounts = bankAccounts;
@@ -142,7 +142,7 @@ export class AppComponent implements OnInit {
       onSuccess: function (public_token, metadata) {
 
         console.log("Plaid Success: ", public_token);
-        
+
       },
       onExit: function (err, metadata) {
         if (err != null) {
@@ -161,7 +161,7 @@ export class AppComponent implements OnInit {
   signUp() {
     this.isLoading = true;
     console.log("Sign Up");
-    if (this.passwordInput != this.confirmPasswordInput){
+    if (this.passwordInput != this.confirmPasswordInput) {
       this.signUpFailed('Passwords don\'t match');
     }
     this.signUpUser.Username = this.usernameInput;
@@ -180,7 +180,7 @@ export class AppComponent implements OnInit {
     );
   }
 
-  async loginFailed(){
+  async loginFailed() {
     const alert = await this.alertController.create({
       header: 'Login Failed',
       message: 'Username or password was incorrect',
@@ -190,7 +190,7 @@ export class AppComponent implements OnInit {
     await alert.present();
   }
 
-  async signUpSucceed(){
+  async signUpSucceed() {
     const alert = await this.alertController.create({
       header: 'Sign Up Success',
       buttons: ['OK']
@@ -199,7 +199,7 @@ export class AppComponent implements OnInit {
     await alert.present();
   }
 
-  async signUpFailed(error: string){
+  async signUpFailed(error: string) {
     const alert = await this.alertController.create({
       header: 'Sign Up Failed',
       message: error,

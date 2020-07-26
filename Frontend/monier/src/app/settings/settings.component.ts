@@ -4,7 +4,7 @@ import { AlertController } from '@ionic/angular';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Globals } from '../globals';
 import { BankAccount } from '../models/models';
-import { Storage } from '@ionic/Storage';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-settings',

@@ -5,7 +5,7 @@ import { Chart } from 'chart.js';
 import { Globals } from '../globals';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MonierService } from '../services/monier.service';
-import { Storage } from '@ionic/Storage';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-home',
