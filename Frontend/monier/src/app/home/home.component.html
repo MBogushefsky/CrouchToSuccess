@@ -17,11 +17,49 @@
   <div id="container">
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Daily Cost In Past 30 Days</ion-card-title>
+        <ion-card-title>Month Statistics</ion-card-title>
       </ion-card-header>
       <ion-card-content>
+        <ion-item-divider>
+          <ion-label>
+            Net Worth In Past 30 Days
+          </ion-label>
+        </ion-item-divider>
+        <canvas #netWorthInPast30DaysLineChart></canvas>
+        <ion-item-divider>
+          <ion-label>
+            Daily Cost In Past 30 Days
+          </ion-label>
+        </ion-item-divider>
         <canvas #barChart></canvas>
+        <ion-item-divider>
+          <ion-label>
+            Transactions In Past 30 Days
+          </ion-label>
+        </ion-item-divider>
+        <canvas #transactionsInPast30DaysPieChart></canvas>
+        <ion-item-divider>
+          <ion-label>
+            Type Of Payments In Past 30 Days
+          </ion-label>
+        </ion-item-divider>
+        <canvas #typeOfPaymentsInPast30DaysPie></canvas>
+        <ion-item-divider>
+          <ion-label>
+            Current Monthly Subscriptions
+          </ion-label>
+        </ion-item-divider>
+        <ion-list *ngIf="globals.overallStatistics != null">
+          <ion-item *ngFor="let item of globals.overallStatistics.CurrentMonthlySubscriptions | keyvalue">
+            <ion-label>
+              {{ item.key }} ({{ item.value | currency }} Monthly)
+            </ion-label>
+          </ion-item>
+        </ion-list>
       </ion-card-content>
     </ion-card>
   </div>
+  <ng-container *ngIf="isLoading">
+      <ion-spinner class="progress-spinner" name="circles"></ion-spinner>
+  </ng-container>
 </ion-content>

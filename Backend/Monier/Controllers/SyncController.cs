@@ -4,6 +4,7 @@ using Monier.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NHibernate;
+using NHibernate.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -29,12 +30,15 @@ namespace Monier.Controllers
             using (ITransaction trans = session.BeginTransaction())
             {
                 Models.User currentUser = UserController.CheckUserCredentials(session, HttpContext.Current.Request.Headers["Authorization"]);
+                DeleteExistingBankAccountsByUser(session, currentUser.Id);
+                DeleteExistingTransactionsByUser(session, currentUser.Id);
                 IEnumerable<DBModels.AccessToken> dbAccessTokens = session.Query<DBModels.AccessToken>().Where(x => x.UserID == currentUser.Id);
                 foreach (var dbAccessToken in dbAccessTokens)
                 {
                     PlaidClient plaidClient = new PlaidClient();
                     string institutionId = null;
                     List<Plaid.Models.BankAccount> pBankAccounts = plaidClient.GetInstitutionBankAccounts(dbAccessToken.Token, out institutionId);
+
                     foreach (var pBankAccount in pBankAccounts)
                     {
                         DBModels.BankAccount dbBankAccount = session.Query<DBModels.BankAccount>().Where(x => x.PlaidAccountID == pBankAccount.account_id).FirstOrDefault();
@@ -71,8 +75,8 @@ namespace Monier.Controllers
                             dbBankAccount.LimitBalance = pBankAccount.balances.limit;
                             session.SaveOrUpdate(dbBankAccount);
                         }
-                        DateTime thirtyDaysPrior = DateTime.Now.AddDays(-30);
-                        JArray pBankAccountTransactions = plaidClient.GetInstitutionBankAccountTransactions(dbAccessToken.Token, pBankAccount.account_id, thirtyDaysPrior, DateTime.Now);
+                        DateTime ninetyDaysPrior = DateTime.Now.AddDays(-90);
+                        JArray pBankAccountTransactions = plaidClient.GetInstitutionBankAccountTransactions(dbAccessToken.Token, pBankAccount.account_id, ninetyDaysPrior, DateTime.Now);
                         foreach (JObject pBankAccountTransaction in pBankAccountTransactions)
                         {
                             DBModels.Transaction dbBankAccountTransaction = session.Query<DBModels.Transaction>().Where(x => x.PlaidTransactionID == pBankAccountTransaction["transaction_id"].ToString()).FirstOrDefault();
@@ -117,6 +121,16 @@ namespace Monier.Controllers
                 }
                 trans.Commit();
             }
+        }
+
+        private static void DeleteExistingBankAccountsByUser(ISession session, Guid userId)
+        {
+            session.Query<DBModels.BankAccount>().Where(x => x.UserID == userId).Delete();
+        }
+
+        private static void DeleteExistingTransactionsByUser(ISession session, Guid userId)
+        {
+            session.Query<DBModels.Transaction>().Where(x => x.UserID == userId).Delete();
         }
     }
 }
