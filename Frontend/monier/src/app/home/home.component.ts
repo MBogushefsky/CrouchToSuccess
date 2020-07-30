@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit {
 
   isLoading = true;
 
-  constructor(private globals: Globals, private monierService: MonierService, private storage: Storage) {
+  constructor(public globals: Globals, private monierService: MonierService, private storage: Storage) {
 
   }
 
