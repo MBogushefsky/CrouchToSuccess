@@ -16,7 +16,7 @@ export class SettingsComponent implements OnInit {
 
   constructor(private monierService: MonierService,
               private alertController: AlertController,
-              private globals: Globals,
+              public globals: Globals,
               private storage: Storage) { }
 
   ngOnInit() {}

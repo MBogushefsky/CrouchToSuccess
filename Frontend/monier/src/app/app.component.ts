@@ -17,11 +17,11 @@ declare var window;
   styleUrls: ['app.component.scss']
 })
 export class AppComponent implements OnInit {
-  private usernameInput = '';
-  private passwordInput = '';
-  private confirmPasswordInput = '';
-  private isLoading: boolean;
-  private signUpUser: User = {
+  public usernameInput = '';
+  public passwordInput = '';
+  public confirmPasswordInput = '';
+  public isLoading: boolean;
+  public signUpUser: User = {
     Id: null,
     Username: null,
     PasswordHash: null,
@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
     private monierService: MonierService,
     private storage: Storage,
     private alertController: AlertController,
-    private globals: Globals
+    public globals: Globals
   ) {
     this.initializeApp();
   }
