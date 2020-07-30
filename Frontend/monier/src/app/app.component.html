@@ -7,6 +7,11 @@
         <ion-input type="password" (keyup.enter)="login()" [(ngModel)]="passwordInput" placeholder="Password"></ion-input>
         <ion-button color="primary" (click)="login()" expand="block">Login</ion-button>
         <ion-button color="secondary" (click)="inSignUp = true;" expand="block">Make an Account</ion-button>
+        <div id="container-fastlink">
+          <div style="text-align: center;">
+            <input type="submit" id="btn-fastlink" (click)="linkBankAccount()" value="Link an Account">
+          </div>
+        </div>
       </ion-content>
     </ng-container>
     <ng-container *ngIf="globals.userToken == null && inSignUp == true">

@@ -9,6 +9,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { User, Transaction, BankAccount } from './models/models';
 import { Globals } from './globals';
 declare var Plaid;
+declare var window;
 
 @Component({
   selector: 'app-root',
@@ -117,6 +118,7 @@ export class AppComponent implements OnInit {
   }
 
   linkBankAccount() {
+    /*
     var linkBankAccountFunction = (publicToken) => {
       this.monierService.linkBankAccountToUser(publicToken).subscribe(
           (data: any) => {
@@ -145,7 +147,29 @@ export class AppComponent implements OnInit {
         }
       }
     });
-    handler.open();
+    handler.open();*/
+
+
+    window.fastlink.open({
+          fastLinkURL: 'https://node.sandbox.yodlee.com/authenticate/restserver',
+          accessToken: 'Bearer BZZhXqaOg1dcR9VQ3chYfe1DakF8',
+          params: {
+            userExperienceFlow : 'Aggregation plus Verification'
+          },
+          onSuccess: function (data) {
+            console.log(data);
+          },
+          onError: function (data) {
+            console.log(data);
+          },
+          onExit: function (data) {
+            console.log(data);
+          },
+          onEvent: function (data) {
+            console.log(data);
+          }
+        },
+        'container-fastlink');
   }
 
   logout() {
