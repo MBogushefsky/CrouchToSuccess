@@ -9,7 +9,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { User, Transaction, BankAccount } from './models/models';
 import { Globals } from './globals';
 declare var Plaid;
-declare var window;
 
 @Component({
   selector: 'app-root',
@@ -43,6 +42,11 @@ export class AppComponent implements OnInit {
       title: 'Settings',
       url: '/settings',
       icon: 'hammer'
+    },
+    {
+      title: 'Link Bank Institution',
+      url: '/link-institution',
+      icon: 'link'
     }
   ];
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
@@ -150,26 +154,7 @@ export class AppComponent implements OnInit {
     handler.open();*/
 
 
-    window.fastlink.open({
-          fastLinkURL: 'https://node.sandbox.yodlee.com/authenticate/restserver',
-          accessToken: 'Bearer BZZhXqaOg1dcR9VQ3chYfe1DakF8',
-          params: {
-            userExperienceFlow : 'Aggregation plus Verification'
-          },
-          onSuccess: function (data) {
-            console.log(data);
-          },
-          onError: function (data) {
-            console.log(data);
-          },
-          onExit: function (data) {
-            console.log(data);
-          },
-          onEvent: function (data) {
-            console.log(data);
-          }
-        },
-        'container-fastlink');
+    
   }
 
   logout() {

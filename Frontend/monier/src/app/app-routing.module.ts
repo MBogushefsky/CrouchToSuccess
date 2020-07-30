@@ -16,6 +16,10 @@ const routes: Routes = [
     loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule)
   },
   {
+    path: 'link-institution',
+    loadChildren: () => import('./link-institution/link-institution.module').then(m => m.LinkInstitutionModule)
+  },
+  {
     path: 'folder/:id',
     loadChildren: () => import('./folder/folder.module').then(m => m.FolderPageModule)
   },

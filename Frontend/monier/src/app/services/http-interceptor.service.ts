@@ -10,14 +10,13 @@ export class HttpInterceptorService implements HttpInterceptor {
 
    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
       let newHeaders = req.headers;
-      if (this.globals.userToken != null){
-         newHeaders = newHeaders.append('Authorization', 'Basic ' + btoa(this.globals.userToken.Username + ":" + this.globals.userToken.PasswordHash));
+      if (!req.url.includes('yodlee')) {
+         if (this.globals.userToken != null){
+            newHeaders = newHeaders.append('Authorization', 'Basic ' + btoa(this.globals.userToken.Username + ":" + this.globals.userToken.PasswordHash));
+         }
+         newHeaders = newHeaders.append('Accept-Language', 'en-US');
+         newHeaders = newHeaders.append('Content-Type', 'application/json');
       }
-      newHeaders = newHeaders.append('Access-Control-Allow-Origin', '*');
-      newHeaders = newHeaders.append('Accept-Language', 'en-US');
-      newHeaders = newHeaders.append('Cache-Control', 'no-cache');
-      newHeaders = newHeaders.append('Content-Type', 'application/json');
-      newHeaders = newHeaders.append('Pragma', 'no-cache');
       const authReq = req.clone({ headers: newHeaders });
       return next.handle(authReq);
    }
