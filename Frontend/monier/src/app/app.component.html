@@ -26,11 +26,10 @@
       <ion-split-pane contentId="main-content">
         <ion-menu class="main-content" contentId="main-content" type="overlay">
           <ion-content style="--padding-top: 0px;">
+            <ion-img style="width: 150px; height: 75px;" src="../assets/InApplicationLogo.png"></ion-img>
+            <ion-list-header class="main-menu-name-header">Welcome {{ globals.userToken.FirstName }} {{ globals.userToken.LastName }}!</ion-list-header>
+            <ion-item-divider></ion-item-divider>
             <ion-list id="main-menu-list">
-              <ion-img style="width: 150px; height: 75px;" src="../assets/InApplicationLogo.png"></ion-img>
-              <ion-list-header>Welcome {{ globals.userToken.FirstName }} {{ globals.userToken.LastName }}!</ion-list-header>
-              <ion-note>{{ globals.userToken.Email }}</ion-note>
-              <ion-item-divider style="margin-top: -30px;"></ion-item-divider>
               <ion-menu-toggle auto-hide="false">
                 <ion-item *ngFor="let p of appPages; let i = index" (click)="selectedPage = p.url" routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" [class.selected]="selectedPage == p.url">
                   <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
@@ -46,7 +45,6 @@
                 </ion-item>
               </ion-menu-toggle>
             </ion-list>
-            <ion-item-divider style="margin-top: -30px;"></ion-item-divider>
             <ng-container *ngIf="globals.linkedBankAccounts != null">
               <ion-list id="bank-account-list">
                 <ion-list-header>Bank Accounts</ion-list-header>
@@ -57,7 +55,6 @@
                   </ion-item>
                 </ng-container>
               </ion-list>
-              <ion-item-divider style="margin-top: -30px;"></ion-item-divider>
               <ion-list id="bank-account-list">
                 <ion-list-header>Credit Cards</ion-list-header>
                 <ng-container *ngFor="let bankAccount of globals.linkedBankAccounts">
