@@ -14,9 +14,10 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpInterceptorService } from './services/http-interceptor.service';
 import { Globals } from './globals';
 import { SharedModule } from './shared.module';
+import { InvestingComponent } from './investing/investing.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, InvestingComponent],
   entryComponents: [],
   imports: [
     BrowserModule,

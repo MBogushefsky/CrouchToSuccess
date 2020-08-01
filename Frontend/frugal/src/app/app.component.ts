@@ -40,6 +40,11 @@ export class AppComponent implements OnInit {
       icon: 'home'
     },
     {
+      title: 'Investing',
+      url: '/investing/dashboard',
+      icon: 'bar-chart-outline'
+    },
+    {
       title: 'Settings',
       url: '/settings',
       icon: 'hammer'

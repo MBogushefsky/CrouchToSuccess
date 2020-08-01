@@ -1,5 +1,4 @@
 ﻿using Frugal.DBModels;
-using Frugal.Plaid;
 using Frugal.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -15,6 +14,7 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using Frugal.ThirdParty.Plaid;
 
 namespace Frugal.Controllers
 {
@@ -37,7 +37,7 @@ namespace Frugal.Controllers
                 {
                     PlaidClient plaidClient = new PlaidClient();
                     string institutionId = null;
-                    List<Plaid.Models.BankAccount> pBankAccounts = plaidClient.GetInstitutionBankAccounts(dbAccessToken.Token, out institutionId);
+                    List<ThirdParty.Plaid.Models.BankAccount> pBankAccounts = plaidClient.GetInstitutionBankAccounts(dbAccessToken.Token, out institutionId);
                     institutionId = InstitutionIDToInstitutionName(institutionId);
                     foreach (var pBankAccount in pBankAccounts)
                     {

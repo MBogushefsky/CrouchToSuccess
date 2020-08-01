@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { InvestingComponent } from './investing/investing.component';
 
 const routes: Routes = [
   {
@@ -10,6 +11,35 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+  },
+  {
+    path: 'investing',
+    component: InvestingComponent,
+    children: [
+      {
+        path: 'dashboard',
+        children: [
+          {
+            path: '',
+            loadChildren: './investing/dashboard/dashboard.module#DashboardModule'
+          }
+        ]
+      },
+      {
+        path: 'search',
+        children: [
+          {
+            path: '',
+            loadChildren: './investing/search/search.module#SearchModule'
+          }
+        ]
+      },
+      {
+        path: '',
+        redirectTo: 'investing/dashboard',
+        pathMatch: 'full'
+      }
+    ]
   },
   {
     path: 'settings',

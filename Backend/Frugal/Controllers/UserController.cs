@@ -1,7 +1,6 @@
 ﻿// Credits to https://stackoverflow.com/questions/25855698/how-can-i-retrieve-basic-authentication-credentials-from-the-header
 using Frugal.DBModels;
 using Frugal.Models;
-using Frugal.Plaid;
 using NHibernate;
 using NHibernate.Linq;
 using System;
@@ -13,6 +12,7 @@ using System.Text;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using Frugal.ThirdParty.Plaid;
 
 namespace Frugal.Controllers
 {

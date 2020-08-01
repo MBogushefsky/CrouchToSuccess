@@ -19,4 +19,13 @@ export class Globals {
 		this.overallStatistics = null;
 		this.linkedBankAccounts = null;
 	}
+
+	dateFormatToDate(dateFormat: string){
+		let date = new Date(dateFormat);
+		let month = date.getMonth() + 1;
+		if(month == 13){
+			month = 1;
+		}
+		return month + '-' + date.getUTCDate() + '-' + date.getFullYear();
+	}
 }

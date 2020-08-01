@@ -47,4 +47,7 @@ export class FrugalService {
     return this.http.delete(this.apiUrl + '/user/linkBank/' + bankAccountId);
   }
 
+  getStockExchangeEODDataBySymbol(symbol: string){
+    return this.http.get(this.apiUrl + '/stock_exchange/data/' + symbol);
+  }
 }

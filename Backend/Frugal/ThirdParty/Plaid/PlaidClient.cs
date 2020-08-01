@@ -7,20 +7,20 @@ using System.Linq;
 using System.Web;
 using System.Web.Configuration;
 
-namespace Frugal.Plaid
+namespace Frugal.ThirdParty.Plaid
 {
     public class PlaidClient
     {
         private static readonly string apiUrl = "https://sandbox.plaid.com";
-        private static string plaidClientId;
-        private static string plaidSecret;
-        private static RestClient plaidClient;
+        private static string clientId;
+        private static string secret;
+        private static RestClient restClient;
         
         public PlaidClient()
         {
-            plaidClientId = WebConfigurationManager.AppSettings["PlaidClientID"];
-            plaidSecret = WebConfigurationManager.AppSettings["PlaidSecret"];
-            plaidClient = new RestClient(apiUrl);
+            clientId = WebConfigurationManager.AppSettings["PlaidClientID"];
+            secret = WebConfigurationManager.AppSettings["PlaidSecret"];
+            restClient = new RestClient(apiUrl);
         }
 
         public List<Plaid.Models.BankAccount> GetInstitutionBankAccounts(string accessToken, out string institutionId)
@@ -29,11 +29,11 @@ namespace Frugal.Plaid
             request.RequestFormat = DataFormat.Json;
             request.AddJsonBody(new
             {
-                client_id = plaidClientId,
-                secret = plaidSecret,
+                client_id = clientId,
+                secret = secret,
                 access_token = accessToken
             });
-            var responseBodyJsonObj = JsonConvert.DeserializeObject<JObject>(plaidClient.Execute(request).Content);
+            var responseBodyJsonObj = JsonConvert.DeserializeObject<JObject>(restClient.Execute(request).Content);
             institutionId = responseBodyJsonObj["item"]["institution_id"].ToString();
             return responseBodyJsonObj["accounts"].ToObject<List<Plaid.Models.BankAccount>>();
         }
@@ -44,8 +44,8 @@ namespace Frugal.Plaid
             request.RequestFormat = DataFormat.Json;
             request.AddJsonBody(new
             {
-                client_id = plaidClientId,
-                secret = plaidSecret,
+                client_id = clientId,
+                secret = secret,
                 access_token = accessToken,
                 start_date = startDate.ToString("yyyy-MM-dd"),
                 end_date = endDate.ToString("yyyy-MM-dd"),
@@ -54,7 +54,7 @@ namespace Frugal.Plaid
                     count = 500
                 }
             });
-            var responseBodyJsonObj = JsonConvert.DeserializeObject<JObject>(plaidClient.Execute(request).Content);
+            var responseBodyJsonObj = JsonConvert.DeserializeObject<JObject>(restClient.Execute(request).Content);
             return responseBodyJsonObj["transactions"].ToObject<JArray>();
         }
 
@@ -64,11 +64,11 @@ namespace Frugal.Plaid
             request.RequestFormat = DataFormat.Json;
             request.AddJsonBody(new
             {
-                client_id = plaidClientId,
-                secret = plaidSecret,
+                client_id = clientId,
+                secret = secret,
                 public_token = publicToken
             });
-            var responseBodyJsonObj = JsonConvert.DeserializeObject<JObject>(plaidClient.Execute(request).Content);
+            var responseBodyJsonObj = JsonConvert.DeserializeObject<JObject>(restClient.Execute(request).Content);
             return responseBodyJsonObj["access_token"].ToObject<string>();
         }
     }

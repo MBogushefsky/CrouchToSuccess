@@ -23,3 +23,7 @@ ALTER TABLE `frugal`.`user`
 DROP COLUMN `AccessToken`,
 DROP INDEX `AccessToken_UNIQUE` ;
 ;
+ALTER TABLE `frugal`.`user` 
+ADD COLUMN `FakeStockExchangeBalance` DECIMAL(10,2) NOT NULL AFTER `Admin`;
+ALTER TABLE `frugal`.`user` 
+DROP COLUMN `FakeStockExchangeBalance`;
