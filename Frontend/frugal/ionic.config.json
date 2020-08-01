@@ -1,0 +1,8 @@
+{
+  "name": "Frugal",
+  "integrations": {
+    "capacitor": {},
+    "cordova": {}
+  },
+  "type": "angular"
+}

@@ -1,0 +1,77 @@
+<ion-app>
+  <ion-content>
+    <ng-container *ngIf="globals.userToken == null && inSignUp == false">
+      <ion-content style="--padding-top: 50px;" class="login-area horiz-verti-center">
+        <ion-img style="padding-bottom: 10px;" src="../assets/ApplicationLogo.png"></ion-img>
+        <ion-input type="text" (keyup.enter)="login()" [(ngModel)]="usernameInput" placeholder="Username"></ion-input>
+        <ion-input type="password" (keyup.enter)="login()" [(ngModel)]="passwordInput" placeholder="Password"></ion-input>
+        <ion-button color="primary" (click)="login()" expand="block">Login</ion-button>
+        <ion-button color="secondary" (click)="inSignUp = true;" expand="block">Make an Account</ion-button>
+      </ion-content>
+    </ng-container>
+    <ng-container *ngIf="globals.userToken == null && inSignUp == true">
+      <ion-content style="--padding-top: 50px;" class="signup-area horiz-verti-center">
+        <ion-img style="padding-bottom: 10px;" src="../assets/ApplicationLogo.png"></ion-img>
+        <ion-input type="text" [(ngModel)]="usernameInput" placeholder="Username"></ion-input>
+        <ion-input type="password" [(ngModel)]="passwordInput" placeholder="Password"></ion-input>
+        <ion-input type="password" [(ngModel)]="confirmPasswordInput" placeholder="Confirm Password"></ion-input>
+        <ion-input type="email" [(ngModel)]="signUpUser.Email" placeholder="Email"></ion-input>
+        <ion-input type="text" [(ngModel)]="signUpUser.FirstName" placeholder="First Name"></ion-input>
+        <ion-input type="text" [(ngModel)]="signUpUser.LastName" placeholder="Last Name"></ion-input>
+        <ion-button color="primary" (click)="signUp()" expand="block">Sign Up</ion-button>
+        <ion-button color="secondary" (click)="inSignUp = false;" expand="block">Cancel</ion-button>
+      </ion-content>
+    </ng-container>
+    <ng-container *ngIf="globals.userToken != null && !isLoading">
+      <ion-split-pane contentId="main-content">
+        <ion-menu class="main-content" contentId="main-content" type="overlay">
+          <ion-content style="--padding-top: 0px;">
+            <ion-img style="width: 150px; height: 75px;" src="../assets/InApplicationLogo.png"></ion-img>
+            <ion-list-header class="main-menu-name-header">Welcome {{ globals.userToken.FirstName }} {{ globals.userToken.LastName }}!</ion-list-header>
+            <ion-item-divider></ion-item-divider>
+            <ion-list id="main-menu-list">
+              <ion-menu-toggle auto-hide="false">
+                <ion-item *ngFor="let p of appPages; let i = index" (click)="selectedPage = p.url" routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" [class.selected]="selectedPage == p.url">
+                  <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+                  <ion-label>{{ p.title }}</ion-label>
+                </ion-item>
+                <ion-item (click)="linkBankAccount()" style="cursor: pointer;" lines="none" detail="false">
+                  <ion-icon slot="start" name="link"></ion-icon>
+                  <ion-label>Link Bank Account</ion-label>
+                </ion-item>
+                <ion-item (click)="logout()" style="cursor: pointer;" lines="none" detail="false">
+                  <ion-icon slot="start" name="log-out"></ion-icon>
+                  <ion-label>Logout</ion-label>
+                </ion-item>
+              </ion-menu-toggle>
+            </ion-list>
+            <ng-container *ngIf="globals.linkedBankAccounts != null">
+              <ion-list id="bank-account-list">
+                <ion-list-header>Bank Accounts</ion-list-header>
+                <ng-container *ngFor="let bankAccount of globals.linkedBankAccounts">
+                  <ion-item *ngIf="bankAccount.Type != 'credit'" lines="none" [routerLink]="['bank-account/' + bankAccount.Id]">
+                    <ion-icon slot="start" name="cash"></ion-icon>
+                    <ion-label>{{bankAccount.InstitutionId}}: {{ bankAccount.Name }} ({{ bankAccount.CurrentBalance | currency }})</ion-label>
+                  </ion-item>
+                </ng-container>
+              </ion-list>
+              <ion-list id="bank-account-list">
+                <ion-list-header>Credit Cards</ion-list-header>
+                <ng-container *ngFor="let bankAccount of globals.linkedBankAccounts">
+                  <ion-item *ngIf="bankAccount.Type == 'credit'" lines="none" [routerLink]="['bank-account/' + bankAccount.Id]">
+                    <ion-icon slot="start" name="card"></ion-icon>
+                    <ion-label>{{bankAccount.InstitutionId}}: {{ bankAccount.Name }} ({{ bankAccount.CurrentBalance | currency }} To Pay)</ion-label>
+                  </ion-item>
+                </ng-container>              
+              </ion-list>
+            </ng-container>
+          </ion-content>
+        </ion-menu>
+        <ion-router-outlet id="main-content"></ion-router-outlet>
+      </ion-split-pane>
+    </ng-container>
+    <ng-container *ngIf="isLoading">
+        <ion-spinner class="progress-spinner" name="circles"></ion-spinner>
+    </ng-container>
+  </ion-content>
+</ion-app>

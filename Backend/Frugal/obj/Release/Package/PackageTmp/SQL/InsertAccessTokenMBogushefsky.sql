@@ -1,0 +1,1 @@
+﻿INSERT INTO `frugal`.`access_token` (`ID`, `UserID`, `AccessToken`) VALUES('19A12718-C33F-4E29-BD20-B0B484E6DDBE', 'D8A7066B-D686-4E91-801A-E235CD4EE0FE', 'access-development-dddd1097-d441-49ee-a72c-ace4e758257b');
