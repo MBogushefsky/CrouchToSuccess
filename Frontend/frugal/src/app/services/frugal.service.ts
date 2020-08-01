@@ -7,7 +7,7 @@ import * as shajs from 'sha.js';
   providedIn: 'root'
 })
 export class FrugalService {
-  private apiUrl = 'http://localhost';
+  private apiUrl = 'http://api.bogaware.com';
 
   constructor(private http: HttpClient) { }
 
