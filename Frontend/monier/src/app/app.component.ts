@@ -122,7 +122,6 @@ export class AppComponent implements OnInit {
   }
 
   linkBankAccount() {
-    /*
     var linkBankAccountFunction = (publicToken) => {
       this.monierService.linkBankAccountToUser(publicToken).subscribe(
           (data: any) => {
@@ -135,7 +134,7 @@ export class AppComponent implements OnInit {
     }
     var handler = Plaid.create({
       clientName: 'Monier',
-      env: 'development',
+      env: 'sandbox',
       key: 'ce84441114a95a4795f66b9bddb36f',
       product: ['auth'],
       onLoad: function () {
@@ -151,9 +150,7 @@ export class AppComponent implements OnInit {
         }
       }
     });
-    handler.open();*/
-
-
+    handler.open();
     
   }
 

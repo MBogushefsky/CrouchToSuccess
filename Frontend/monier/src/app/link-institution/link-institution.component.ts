@@ -31,12 +31,12 @@ export class LinkInstitutionComponent implements OnInit {
     var isLinkingBankInstitutionFalseFunction = () => {
       this.isLinkingBankInstitution = false;
     };
-    this.yodleeService.getUserAccessToken('sbMem5f1f1767457d71').subscribe(
+    this.yodleeService.getUserAccessToken('46085511-1181-4225-a1f4-88312958420e_ADMIN').subscribe(
       (data: any) => {
           window.fastlink.close();
           this.isLoading = false;
           window.fastlink.open({
-            fastLinkURL: 'https://node.sandbox.yodlee.com/authenticate/restserver',
+            fastLinkURL: 'https://development.node.yodlee.com/authenticate/USDevexPreProd2-355/?channelAppName=usdevexpreprod2',
             accessToken: 'Bearer ' + data.token.accessToken,
             params: {
               userExperienceFlow : 'Aggregation plus Verification'

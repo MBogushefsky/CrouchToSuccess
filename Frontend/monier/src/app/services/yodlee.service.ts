@@ -5,7 +5,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   providedIn: 'root'
 })
 export class YodleeService {
-  private apiUrl = 'https://sandbox.api.yodlee.com/ysl';
+  //private apiUrl = 'https://sandbox.api.yodlee.com/ysl';
+  private apiUrl = 'https://development.api.yodlee.com/ysl';
   private clientId = 'MXoJfWrxmoAGiYWy3iFG0vik3wqmvXD5';
   private secret = '4Qr4fnDeH4ZV1cw7';
 
