@@ -2,8 +2,14 @@
   <div id="container">
     <ion-card [hidden]="isLoading">
       <ion-card-content *ngIf="symbolData != null">
-        <h1>
+        <h3>
           {{ symbolData.Symbol }}
+        </h3>
+        <h1>
+          {{ symbolData.CompanyName }}
+        </h1>
+        <h1>
+          {{ symbolData.CurrentPrice | currency }}
         </h1>
       </ion-card-content>
       <ion-card-content>
@@ -22,26 +28,20 @@
         </ion-tabs>
         <canvas #symbolLineChart></canvas>
       </ion-card-content>
-      <ion-card-content>
+      <ion-card-content *ngIf="symbolData != null">
         <ion-grid>
           <ion-row>
-            <ion-col size="11">
+            <ion-col size="4">
               <ion-input type="number" [(ngModel)]="stockToBuyInput" placeholder="Stock Amount..."></ion-input>        
             </ion-col>
-            <ion-col size="1">
-              <ion-button color="primary" (click)="buyStock()">Buy</ion-button>
+            <ion-col size="2">
+              <ion-button color="primary" (click)="buyStock()">Buy at {{ symbolData.CurrentPrice | currency }}</ion-button>
             </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-card-content>
-      <ion-card-content>
-        <ion-grid>
-          <ion-row>
-            <ion-col size="11">
+            <ion-col size="4">
               <ion-input type="number" [(ngModel)]="stockToSellInput" placeholder="Stock Amount..."></ion-input>        
             </ion-col>
-            <ion-col size="1">
-              <ion-button color="primary" (click)="sellStock()">Sell</ion-button>
+            <ion-col size="2">
+              <ion-button color="primary" (click)="sellStock()">Sell for {{ symbolData.CurrentPrice | currency }} each</ion-button>
             </ion-col>
           </ion-row>
         </ion-grid>

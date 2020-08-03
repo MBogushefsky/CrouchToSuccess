@@ -12,8 +12,6 @@ import { Storage } from '@ionic/storage';
 })
 export class DashboardComponent implements OnInit {
   isLoading = false;
-  currentBuyingPower = 0.00;
-  currentPortfolio: any;
 
   constructor(private frugalService: FrugalService,
               private alertController: AlertController,
@@ -27,10 +25,12 @@ export class DashboardComponent implements OnInit {
   getCurrentPortfolio(){
     this.frugalService.getStockExchangeCurrentBuyingPower().subscribe(
       (receivedBuyingPower: any) => {
-        this.currentBuyingPower = receivedBuyingPower;
         this.frugalService.getStockExchangeCurrentPortfolio().subscribe(
           (receivedPortfolio: any) => {
-            this.currentPortfolio = receivedPortfolio;
+            this.globals.stockExchangeData = {
+              buyingPower: receivedBuyingPower,
+              portfolio: receivedPortfolio
+            }
           },
           (error: HttpErrorResponse) => {
             console.log('Error: ', error.message);

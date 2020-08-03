@@ -5,6 +5,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Globals } from '../../globals';
 import { Storage } from '@ionic/storage';
 import { Chart } from 'chart.js';
+import { StockExchangeTransaction } from '../../models/models';
 
 @Component({
   selector: 'app-stock-view',
@@ -32,12 +33,60 @@ export class StockViewComponent implements OnInit {
   }
 
   buyStock(){
-
+    const transaction: StockExchangeTransaction = {
+      Id: null,
+      UserId: null,
+      CurrencyAmount: null,
+      Symbol: this.symbol,
+      StockRate: this.symbolData.CurrentPrice,
+      Type: 'BUY',
+      StockAmount: this.stockToBuyInput,
+      CreatedDate: null
+    };
+    this.frugalService.buyStockExchangeStock(transaction).subscribe(
+      (data: any) => {
+        if (transaction.StockAmount === 1){
+          this.globals.succeedMessage('Bought ' + transaction.StockAmount + ' stock of ' + transaction.Symbol);
+        }
+        else {
+          this.globals.succeedMessage('Bought ' + transaction.StockAmount + ' stocks of ' + transaction.Symbol);
+        }
+      },
+      (error: HttpErrorResponse) => {
+        console.log('Error: ', error.message);
+        this.globals.errorMessage(error);
+      }
+    );
   }
 
   sellStock(){
-
+    const transaction: StockExchangeTransaction = {
+      Id: null,
+      UserId: null,
+      CurrencyAmount: null,
+      Symbol: this.symbol,
+      StockRate: this.symbolData.CurrentPrice,
+      Type: 'SELL',
+      StockAmount: this.stockToSellInput,
+      CreatedDate: null
+    };
+    this.frugalService.sellStockExchangeStock(transaction).subscribe(
+      (data: any) => {
+        if (transaction.StockAmount === 1){
+          this.globals.succeedMessage('Sold ' + transaction.StockAmount + ' stock of ' + transaction.Symbol);
+        }
+        else {
+          this.globals.succeedMessage('Sold ' + transaction.StockAmount + ' stocks of ' + transaction.Symbol);
+        }
+      },
+      (error: HttpErrorResponse) => {
+        console.log('Error: ', error.message);
+        this.globals.errorMessage(error);
+      }
+    );
   }
+
+  
 
   searchForSymbol(){
     this.isLoading = true;
@@ -59,11 +108,9 @@ export class StockViewComponent implements OnInit {
     let dataLabels = [];
     let dataSet = [];
     for(let data of this.symbolData.Day){
-      dataLabels.push(this.globals.dateFormatToDateTime(data.date));
+      dataLabels.push(data.label);
       dataSet.push(data.close);
     }
-    dataLabels.reverse();
-    dataSet.reverse();
     let data = {
       datasets: [{
           label: 'US Dollars ($)',
@@ -84,12 +131,10 @@ export class StockViewComponent implements OnInit {
     this.selectedDuration = 'Week';
     let dataLabels = [];
     let dataSet = [];
-    for(let dataKey in this.symbolData.Week){
-      dataLabels.push(this.globals.dateFormatToDateTime(dataKey));
-      dataSet.push(this.symbolData.Week[dataKey].close);
+    for(let data of this.symbolData.Week){
+      dataLabels.push(data.date + ' ' + data.label);
+      dataSet.push(data.close);
     }
-    dataLabels.reverse();
-    dataSet.reverse();
     let data = {
       datasets: [{
           label: 'US Dollars ($)',
@@ -110,12 +155,10 @@ export class StockViewComponent implements OnInit {
     this.selectedDuration = 'Month';
     let dataLabels = [];
     let dataSet = [];
-    for(let dataKey in this.symbolData.Month){
-      dataLabels.push(this.globals.dateFormatToDateTime(dataKey));
-      dataSet.push(this.symbolData.Month[dataKey].close);
+    for(let data of this.symbolData.Month){
+      dataLabels.push(data.date + ' ' + data.label);
+      dataSet.push(data.close);
     }
-    dataLabels.reverse();
-    dataSet.reverse();
     let data = {
       datasets: [{
           label: 'US Dollars ($)',

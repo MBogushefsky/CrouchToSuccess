@@ -5,6 +5,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Globals } from '../../globals';
 import { Storage } from '@ionic/storage';
 import { Chart } from 'chart.js';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-search',
@@ -15,14 +16,21 @@ export class SearchComponent implements OnInit {
   @ViewChild('eodOfSymbolLineChart') eodOfSymbolLineChart;
   isLoading = false;
   searchInput = '';
-  isSearchingForSymbol = false;
+  searchedSymbol: string;
 
   constructor(private frugalService: FrugalService,
               private alertController: AlertController,
               public globals: Globals,
-              private storage: Storage) { }
+              private storage: Storage,
+              private route: ActivatedRoute,
+              private router: Router) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.searchInput = params['search'];
+      this.searchedSymbol = params['search'];
+    });
+  }
 
   search(){
     /*this.frugalService.getStockExchangeEODDataBySymbol(this.searchInput).subscribe(
@@ -34,7 +42,14 @@ export class SearchComponent implements OnInit {
         console.log('Error: ', error.message);
       }
     );*/
-    this.isSearchingForSymbol = true;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        search: this.searchInput
+      },
+      queryParamsHandling: 'merge'
+    });
+    this.searchedSymbol = this.searchInput;
   }
 
   /*createEODOfSymbolLineChart(eodData: any){

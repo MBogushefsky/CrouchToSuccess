@@ -12,17 +12,17 @@ namespace Frugal.ThirdParty.MarketStackClient
 {
     public class MarketStackClient
     {
-        private static string apiUrl = "http://api.marketstack.com/v1";
+        private static string apiUrl = "https://cloud.iexapis.com/stable";
         private static string apiKey;
         private static RestClient restClient;
         
         public MarketStackClient()
         {
-            apiKey = WebConfigurationManager.AppSettings["MarketStackApiKey"];
+            apiKey = WebConfigurationManager.AppSettings["IEXCloudApiKey"];
             restClient = new RestClient(apiUrl);
         }
 
-        public Dictionary<DateTime, double> GetEODBySymbol(string symbol)
+        /*public Dictionary<DateTime, double> GetEODBySymbol(string symbol)
         {
             Dictionary<DateTime, double> resultDictionary = new Dictionary<DateTime, double>();
             var request = new RestRequest("/eod?access_key=" + apiKey + "&symbols=" + symbol, Method.GET);
@@ -33,53 +33,56 @@ namespace Frugal.ThirdParty.MarketStackClient
                 resultDictionary.Add(DateTime.Parse(eod.date), eod.close);
             }
             return resultDictionary;
+        }*/
+
+        public JObject GetSymbolQuote(string symbol)
+        {
+            var request = new RestRequest("/stock/" + symbol + "/quote?token=" + apiKey, Method.GET);
+            var responseBodyJsonObj = JsonConvert.DeserializeObject<JObject>(restClient.Execute(request).Content);
+            return responseBodyJsonObj;
         }
 
-        public List<Intraday> GetIntradayRaw(string symbol, string interval, string dateFrom, string dateTo, int? limit)
+        public List<PriceInstance> GetIntradayRaw(string symbol)
         {
-            string endpointUrl = "/intraday?access_key=" + apiKey + "&symbols=" + symbol + "&interval=" + interval;
-            if (limit != null)
-            {
-                endpointUrl += "&limit=" + limit;
-            }
-            if (dateFrom != null)
-            {
-                endpointUrl += "&date_from=" + dateFrom;
-            }
-            if (dateTo != null)
-            {
-                endpointUrl += "&date_to=" + dateTo;
-            }
-            var request = new RestRequest(endpointUrl, Method.GET);
-            var responseBodyJsonObj = JsonConvert.DeserializeObject<JObject>(restClient.Execute(request).Content);
-            List<Intraday> intradays = responseBodyJsonObj["data"].ToObject<List<Intraday>>();
+            var request = new RestRequest("/stock/" + symbol + "/intraday-prices?token=" + apiKey, Method.GET);
+            var responseBodyJsonObj = JsonConvert.DeserializeObject<JArray>(restClient.Execute(request).Content);
+            List<PriceInstance> intradays = responseBodyJsonObj.ToObject<List<PriceInstance>>();
+
+            return intradays;
+        }
+
+        public List<PriceInstance> GetHistoricalDataRaw(string symbol, string range)
+        {
+            var request = new RestRequest("/stock/" + symbol + "/chart/" + range + "?token=" + apiKey, Method.GET);
+            var responseBodyJsonObj = JsonConvert.DeserializeObject<JArray>(restClient.Execute(request).Content);
+            List<PriceInstance> intradays = responseBodyJsonObj.ToObject<List<PriceInstance>>();
             return intradays;
         }
 
         public Dictionary<DateTime, double> GetIntradayBySymbol(string symbol)
         {
             Dictionary<DateTime, double> resultDictionary = new Dictionary<DateTime, double>();
-            List<Intraday> intradays = GetIntradayBySymbolRaw(symbol);
+            List<PriceInstance> intradays = GetIntradayBySymbolRaw(symbol);
+            double previousKnownValue = 0.00;
             foreach (var intraday in intradays)
             {
-                resultDictionary.Add(DateTime.Parse(intraday.date), intraday.close);
+                resultDictionary.Add(DateTime.Parse(intraday.date), intraday.close == null ? previousKnownValue : (double) intraday.close);
             }
             return resultDictionary;
         }
 
         public double GetCurrentPriceBySymbol(string symbol)
         {
-            var request = new RestRequest("/intraday/latest?access_key=" + apiKey + "&symbols=" + symbol, Method.GET);
-            var responseBodyJsonObj = JsonConvert.DeserializeObject<JObject>(restClient.Execute(request).Content);
-            List<Intraday> intradays = responseBodyJsonObj["data"].ToObject<List<Intraday>>();
-            return intradays[0].close;
+            var request = new RestRequest("/stock/" + symbol + "/price?token=" + apiKey, Method.GET);
+            var responseBodyJsonObj = JsonConvert.DeserializeObject<double>(restClient.Execute(request).Content);
+            return responseBodyJsonObj;
         }
 
-        public static List<Intraday> GetIntradayBySymbolRaw(string symbol)
+        public static List<PriceInstance> GetIntradayBySymbolRaw(string symbol)
         {
             var request = new RestRequest("/intraday?access_key=" + apiKey + "&symbols=" + symbol, Method.GET);
             var responseBodyJsonObj = JsonConvert.DeserializeObject<JObject>(restClient.Execute(request).Content);
-            List<Intraday> intradays = responseBodyJsonObj["data"].ToObject<List<Intraday>>();
+            List<PriceInstance> intradays = responseBodyJsonObj["data"].ToObject<List<PriceInstance>>();
             return intradays;
         }
     }

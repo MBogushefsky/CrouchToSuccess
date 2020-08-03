@@ -214,9 +214,9 @@
     <Compile Include="Handlers\NullHandler.cs" />
     <Compile Include="Models\StockExchangeTransaction.cs" />
     <Compile Include="Models\Transaction.cs" />
-    <Compile Include="ThirdParty\MarketStack\MarketStackClient.cs" />
-    <Compile Include="ThirdParty\MarketStack\Models\Intraday.cs" />
-    <Compile Include="ThirdParty\MarketStack\Models\EOD.cs" />
+    <Compile Include="ThirdParty\IEXCloud\IEXCloudClient.cs" />
+    <Compile Include="ThirdParty\IEXCloud\Models\PriceInstance.cs" />
+    <Compile Include="ThirdParty\IEXCloud\Models\EOD.cs" />
     <Compile Include="ThirdParty\Plaid\Models\BankAccount.cs" />
     <Compile Include="ThirdParty\Plaid\Models\BankAccountBalance.cs" />
     <Compile Include="ThirdParty\Plaid\PlaidClient.cs" />

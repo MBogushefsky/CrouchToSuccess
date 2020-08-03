@@ -29,9 +29,9 @@
         </ion-grid>
       </ion-card-content>
     </ion-card>
-    <ion-card *ngIf="isSearchingForSymbol" style="height: 800px;">
+    <ion-card *ngIf="searchedSymbol != null" style="height: 800px;">
       <ion-card-content>
-        <app-stock-view [symbol]="searchInput"></app-stock-view>
+        <app-stock-view [symbol]="searchedSymbol"></app-stock-view>
       </ion-card-content>
     </ion-card>
   </div>

@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
 import { User, Transaction, BankAccount } from './models/models';
 import { Storage } from '@ionic/storage';
+import { AlertController } from '@ionic/angular';
 
 @Injectable()
 export class Globals {
 	userToken: User;
 	overallStatistics: any;
 	linkedBankAccounts: BankAccount[];
+	stockExchangeData: any;
 
 	constructor(
-		private storage: Storage
+		private storage: Storage,
+		private alertController: AlertController
 	) {
 	}
 
@@ -43,5 +46,22 @@ export class Globals {
 			amPm = 'AM';
 		}
 		return (hourAmount > 9 ? hourAmount : '0' + hourAmount) + ':' + (minuteAmount > 9 ? minuteAmount : '0' + minuteAmount) + ' ' + amPm;
+	}
+
+	async succeedMessage(message: string){
+		const alert = await this.alertController.create({
+			header: message,
+			buttons: ['OK']
+		});
+		await alert.present();
+	}
+
+	async errorMessage(error: any){
+		const alert = await this.alertController.create({
+			header: 'Error',
+			message: error.error,
+			buttons: ['OK']
+		});
+		await alert.present();
 	}
 }
