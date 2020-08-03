@@ -215,6 +215,7 @@
     <Compile Include="Models\StockExchangeTransaction.cs" />
     <Compile Include="Models\Transaction.cs" />
     <Compile Include="ThirdParty\MarketStack\MarketStackClient.cs" />
+    <Compile Include="ThirdParty\MarketStack\Models\Intraday.cs" />
     <Compile Include="ThirdParty\MarketStack\Models\EOD.cs" />
     <Compile Include="ThirdParty\Plaid\Models\BankAccount.cs" />
     <Compile Include="ThirdParty\Plaid\Models\BankAccountBalance.cs" />

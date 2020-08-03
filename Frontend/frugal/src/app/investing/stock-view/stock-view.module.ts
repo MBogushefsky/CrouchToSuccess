@@ -2,10 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { SearchRoutingModule } from './search-routing.module';
-import { SearchComponent } from './search.component';
+import { StockViewRoutingModule } from './stock-view-routing.module';
+import { StockViewComponent } from './stock-view.component';
 import { SharedModule } from '../../shared.module';
-import { StockViewComponent } from '../stock-view/stock-view.component';
 
 @NgModule({
   imports: [
@@ -13,8 +12,8 @@ import { StockViewComponent } from '../stock-view/stock-view.component';
     FormsModule,
     IonicModule,
     SharedModule,
-    SearchRoutingModule
+    StockViewRoutingModule
   ],
-  declarations: [SearchComponent, StockViewComponent]
+  declarations: [StockViewComponent]
 })
-export class SearchModule { }
+export class StockViewModule { }

@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { User } from '../models/models';
+import { User, StockExchangeTransaction } from '../models/models';
 import * as shajs from 'sha.js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FrugalService {
-  private apiUrl = 'http://api.bogaware.com';
+  private apiUrl = 'http://localhost';
 
   constructor(private http: HttpClient) { }
 
@@ -47,7 +47,31 @@ export class FrugalService {
     return this.http.delete(this.apiUrl + '/user/linkBank/' + bankAccountId);
   }
 
+  getStockExchangeCurrentBuyingPower(){
+    return this.http.get(this.apiUrl + '/stock-exchange/buying-power');
+  }
+
+  getStockExchangeSymbolData(symbol: string){
+    return this.http.get(this.apiUrl + '/stock-exchange/data/' + symbol);
+  }
+
   getStockExchangeEODDataBySymbol(symbol: string){
-    return this.http.get(this.apiUrl + '/stock_exchange/data/' + symbol);
+    return this.http.get(this.apiUrl + '/stock-exchange/eod/' + symbol);
+  }
+
+  getStockExchangeIntradayBySymbol(symbol: string){
+    return this.http.get(this.apiUrl + '/stock-exchange/intraday/' + symbol);
+  }
+
+  getStockExchangeCurrentPortfolio(){
+        return this.http.get(this.apiUrl + '/stock-exchange/portfolio');
+  }
+
+  buyStockExchangeStock(stockExchangeTransaction: StockExchangeTransaction){
+        return this.http.post(this.apiUrl + '/stock-exchange/buy', stockExchangeTransaction);
+  }
+
+  sellStockExchangeStock(stockExchangeTransaction: StockExchangeTransaction){
+        return this.http.post(this.apiUrl + '/stock-exchange/sell', stockExchangeTransaction);
   }
 }

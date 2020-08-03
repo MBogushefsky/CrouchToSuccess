@@ -15,6 +15,8 @@ namespace Frugal.DBModels
             Map(x => x.Type).Column("Type").Not.Nullable();
             Map(x => x.CurrencyAmount).Column("CurrencyAmount").Nullable();
             Map(x => x.StockAmount).Column("StockAmount").Nullable();
+            Map(x => x.StockRate).Column("StockRate").Nullable();
+            Map(x => x.CreatedDate).Column("CreatedDate").Not.Nullable();
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FrugalService } from '../../services/frugal.service';
 import { AlertController } from '@ionic/angular';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -13,9 +13,9 @@ import { Chart } from 'chart.js';
 })
 export class SearchComponent implements OnInit {
   @ViewChild('eodOfSymbolLineChart') eodOfSymbolLineChart;
-  showEodOfSymbolLineChart = false;
   isLoading = false;
   searchInput = '';
+  isSearchingForSymbol = false;
 
   constructor(private frugalService: FrugalService,
               private alertController: AlertController,
@@ -24,8 +24,8 @@ export class SearchComponent implements OnInit {
 
   ngOnInit() {}
 
-  searchForSymbol(){
-    this.frugalService.getStockExchangeEODDataBySymbol(this.searchInput).subscribe(
+  search(){
+    /*this.frugalService.getStockExchangeEODDataBySymbol(this.searchInput).subscribe(
       (eodData: any) => {
         this.createEODOfSymbolLineChart(eodData);
         this.isLoading = false;
@@ -33,11 +33,11 @@ export class SearchComponent implements OnInit {
       (error: HttpErrorResponse) => {
         console.log('Error: ', error.message);
       }
-    );
+    );*/
+    this.isSearchingForSymbol = true;
   }
 
-  createEODOfSymbolLineChart(eodData: any){
-    this.showEodOfSymbolLineChart = true;
+  /*createEODOfSymbolLineChart(eodData: any){
     let dataLabels = [];
     let dataSet = [];
     for(let dataKey in eodData){
@@ -60,5 +60,5 @@ export class SearchComponent implements OnInit {
       data: data,
       options: null
     });
-  }
+  }*/
 }

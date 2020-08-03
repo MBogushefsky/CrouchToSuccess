@@ -23,11 +23,15 @@
               <ion-input type="text" [(ngModel)]="searchInput" placeholder="Symbol..."></ion-input>        
             </ion-col>
             <ion-col size="1">
-              <ion-button color="primary" (click)="searchForSymbol()">Search</ion-button>
+              <ion-button color="primary" (click)="search()">Search</ion-button>
             </ion-col>
           </ion-row>
         </ion-grid>
-        <canvas #eodOfSymbolLineChart></canvas>
+      </ion-card-content>
+    </ion-card>
+    <ion-card *ngIf="isSearchingForSymbol" style="height: 800px;">
+      <ion-card-content>
+        <app-stock-view [symbol]="searchInput"></app-stock-view>
       </ion-card-content>
     </ion-card>
   </div>

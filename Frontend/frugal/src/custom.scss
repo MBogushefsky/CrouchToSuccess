@@ -17,6 +17,10 @@ ion-content {
   --background: url('./assets/background.png');
 }
 
+.no-background-image {
+  --background: none;
+}
+
 ion-input {
   border: 1px solid gray;
   border-radius: 10px;

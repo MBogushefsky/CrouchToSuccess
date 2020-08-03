@@ -21,11 +21,27 @@ export class Globals {
 	}
 
 	dateFormatToDate(dateFormat: string){
-		let date = new Date(dateFormat);
+		let date = new Date(Date.parse(dateFormat));
 		let month = date.getMonth() + 1;
-		if(month == 13){
-			month = 1;
+		return month + '-' + date.getDate() + '-' + date.getFullYear();
+	}
+
+	dateFormatToDateTime(dateFormat: string){
+		return this.dateFormatToDate(dateFormat) + ' ' + this.dateFormatToTimeOfDay(dateFormat);
+	}
+	
+	dateFormatToTimeOfDay(dateFormat: string){
+		let date = new Date(Date.parse(dateFormat));
+		let hourAmount = date.getHours();
+		let minuteAmount = date.getMinutes();
+		let amPm = '';
+		if(hourAmount > 12){
+			hourAmount -= 12;
+			amPm = 'PM';
 		}
-		return month + '-' + date.getUTCDate() + '-' + date.getFullYear();
+		else{
+			amPm = 'AM';
+		}
+		return (hourAmount > 9 ? hourAmount : '0' + hourAmount) + ':' + (minuteAmount > 9 ? minuteAmount : '0' + minuteAmount) + ' ' + amPm;
 	}
 }

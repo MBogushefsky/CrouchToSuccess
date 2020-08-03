@@ -37,3 +37,14 @@ export class Transaction {
 	Categories: string[];
 	TransactionDate: Date;
 }
+
+export class StockExchangeTransaction {
+	Id: string;
+	UserId: string;
+	Symbol: string;
+	Type: string;
+	CurrencyAmount: number;
+	StockAmount: number;
+	StockRate: number;
+	CreatedDate: Date;
+}

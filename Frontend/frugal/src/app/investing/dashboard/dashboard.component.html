@@ -17,7 +17,17 @@
   <div id="container">
     <ion-card>
       <ion-card-content>
-        Dashboard
+        Buying Power: {{ currentBuyingPower | currency}}
+        <ion-list *ngIf="currentPortfolio != null">
+          <ion-item *ngFor="let item of currentPortfolio | keyvalue">
+            <ion-label *ngIf="item.value == 1">
+              {{ item.value }} Stock in {{ item.key }} 
+            </ion-label>
+            <ion-label *ngIf="item.value != 1">
+              {{ item.value }} Stocks in {{ item.key }} 
+            </ion-label>
+          </ion-item>
+        </ion-list>
       </ion-card-content>
     </ion-card>
   </div>
