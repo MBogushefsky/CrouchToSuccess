@@ -5,3 +5,5 @@
   `LastUpdatedDate` TIMESTAMP NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE INDEX `ID_UNIQUE` (`ID` ASC));
+  ALTER TABLE `frugal`.`stock_exchange_chart_sync` 
+CHANGE COLUMN `LastUpdatedDate` `LastUpdatedTimestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ;

@@ -197,8 +197,14 @@
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\StockExchangeController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="DBModels\StockExchangeQuoteHistory.cs" />
+    <Compile Include="DBModels\StockExchangeQuoteHistoryMap.cs" />
+    <Compile Include="DBModels\StockExchangeChartSyncMap.cs" />
+    <Compile Include="DBModels\StockExchangeChartSync.cs" />
+    <Compile Include="DBModels\StockExchangeChart.cs" />
     <Compile Include="DBModels\StockExchangeTransaction.cs" />
     <Compile Include="DBModels\AccessToken.cs" />
+    <Compile Include="DBModels\StockExchangeChartMap.cs" />
     <Compile Include="DBModels\StockExchangeTransactionMap.cs" />
     <Compile Include="DBModels\AccessTokenMap.cs" />
     <Compile Include="DBModels\TransactionMap.cs" />
@@ -211,7 +217,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Handlers\DictionaryHandler.cs" />
+    <Compile Include="Handlers\DateTimeHandler.cs" />
     <Compile Include="Handlers\NullHandler.cs" />
+    <Compile Include="Models\StockExchangePortfolio.cs" />
+    <Compile Include="Models\StockExchangeQuoteHistory.cs" />
+    <Compile Include="Models\StockExchangeChartSync.cs" />
+    <Compile Include="Models\StockExchangeChart.cs" />
     <Compile Include="Models\StockExchangeTransaction.cs" />
     <Compile Include="Models\Transaction.cs" />
     <Compile Include="ThirdParty\IEXCloud\IEXCloudClient.cs" />
@@ -224,7 +236,10 @@
     <Compile Include="Models\UserToken.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="SQL\CreateTableStockExchangeTransactions.sql" />
+    <Content Include="SQL\CreateTableStockExchangeQuoteHistory.sql" />
+    <Content Include="SQL\CreateTableStockExchangeChartSync.sql" />
+    <Content Include="SQL\CreateTableStockExchangeChart.sql" />
+    <Content Include="SQL\CreateTableStockExchangeTransaction.sql" />
     <Content Include="SQL\CreateTableTransaction.sql" />
     <Content Include="SQL\InsertAccessTokenMBogushefsky.sql" />
   </ItemGroup>

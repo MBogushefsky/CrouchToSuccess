@@ -12,3 +12,5 @@
   UNIQUE INDEX `ID_UNIQUE` (`ID` ASC));
   ALTER TABLE `frugal`.`stock_exchange_data` 
 RENAME TO  `frugal`.`stock_exchange_chart` ;
+ALTER TABLE `frugal`.`stock_exchange_chart` 
+CHANGE COLUMN `Date` `Timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ;

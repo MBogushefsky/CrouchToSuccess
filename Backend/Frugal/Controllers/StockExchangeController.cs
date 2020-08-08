@@ -48,7 +48,7 @@ namespace Frugal.Controllers
 
         [Route("equity/history")]
         [HttpGet]
-        public Dictionary<string, List<Models.StockExchangeTransaction>> GetStockHistoryOfUser()
+        public Dictionary<string, Dictionary<DateTime, double>> GetStockHistoryOfUser()
         {
             using (ISession session = SessionFactory.GetCurrentSession())
             using (ITransaction trans = session.BeginTransaction())
@@ -56,19 +56,26 @@ namespace Frugal.Controllers
                 Models.User currentUser = UserController.CheckUserCredentials(session, HttpContext.Current.Request.Headers["Authorization"]);
                 IEnumerable<DBModels.StockExchangeTransaction> dbStockExchangeTransactions = session.QueryOver<DBModels.StockExchangeTransaction>().Where(x => x.UserID == currentUser.Id).OrderBy(x => x.CreatedDate).Asc.List();
                 
-                Dictionary<string, List<Models.StockExchangeTransaction>> resultDictionary = new Dictionary<string, List<Models.StockExchangeTransaction>>();
+                Dictionary<string, int> allEverOwnedPortfolio = GetAllEverOwnerStockPortfolio(session, currentUser.Id);
+                IEnumerable<DBModels.StockExchangeQuoteHistory> dbStockExchangeQuoteHistories = session.Query<DBModels.StockExchangeQuoteHistory>().Where(x => allEverOwnedPortfolio.ContainsKey(x.Symbol));
+                List<Models.StockExchangeQuoteHistory> stockExchangeQuoteHistories = DBModelToModel(dbStockExchangeQuoteHistories);
+
+                Dictionary<string, Dictionary<DateTime, double>> resultDictionary = new Dictionary<string, Dictionary<DateTime, double>>();
+
                 List<Models.StockExchangeTransaction> dayTransactions = new List<Models.StockExchangeTransaction>();
                 List<Models.StockExchangeTransaction> weekTransactions = new List<Models.StockExchangeTransaction>();
                 List<Models.StockExchangeTransaction> monthTransactions = new List<Models.StockExchangeTransaction>();
-                List<Models.StockExchangeTransaction> threeMonthTransactions = new List<Models.StockExchangeTransaction>();
-                List<Models.StockExchangeTransaction> yearTransactions = new List<Models.StockExchangeTransaction>();
                 List<Models.StockExchangeTransaction> allTransactions = new List<Models.StockExchangeTransaction>();
+
+                List<Models.StockExchangeQuoteHistory> dayQuotes = new List<Models.StockExchangeQuoteHistory>();
+                List<Models.StockExchangeQuoteHistory> weekQuotes = new List<Models.StockExchangeQuoteHistory>();
+                List<Models.StockExchangeQuoteHistory> monthQuotes = new List<Models.StockExchangeQuoteHistory>();
+                List<Models.StockExchangeQuoteHistory> allQuotes = new List<Models.StockExchangeQuoteHistory>();
+
                 DateTime currentDateTime = DateTime.Now;
                 DateTime dayAgo = DateTime.Now.AddDays(-1);
                 DateTime weekAgo = DateTime.Now.AddDays(-7);
                 DateTime monthAgo = DateTime.Now.AddMonths(-1);
-                DateTime threeMonthAgo = DateTime.Now.AddMonths(-3);
-                DateTime yearAgo = DateTime.Now.AddYears(-1);
                 foreach (var transaction in dbStockExchangeTransactions)
                 {
                     Models.StockExchangeTransaction transactionToAdd = StockExchangeTransactionDBModelToModel(transaction);
@@ -84,22 +91,30 @@ namespace Frugal.Controllers
                     {
                         monthTransactions.Add(transactionToAdd);
                     }
-                    if (DateTime.Compare(threeMonthAgo, transaction.CreatedDate) <= 0)
-                    {
-                        threeMonthTransactions.Add(transactionToAdd);
-                    }
-                    if (DateTime.Compare(yearAgo, transaction.CreatedDate) <= 0)
-                    {
-                        yearTransactions.Add(transactionToAdd);
-                    }
                     allTransactions.Add(transactionToAdd);
                 }
-                resultDictionary.Add("Day", dayTransactions);
-                resultDictionary.Add("Week", weekTransactions);
-                resultDictionary.Add("Month", monthTransactions);
-                resultDictionary.Add("3Month", threeMonthTransactions);
-                resultDictionary.Add("Year", yearTransactions);
-                resultDictionary.Add("All", allTransactions);
+
+                foreach (var quote in stockExchangeQuoteHistories)
+                {
+                    if (DateTime.Compare(dayAgo, quote.Timestamp) <= 0)
+                    {
+                        dayQuotes.Add(quote);
+                    }
+                    if (DateTime.Compare(weekAgo, quote.Timestamp) <= 0)
+                    {
+                        weekQuotes.Add(quote);
+                    }
+                    if (DateTime.Compare(monthAgo, quote.Timestamp) <= 0)
+                    {
+                        monthQuotes.Add(quote);
+                    }
+                    allQuotes.Add(quote);
+                }
+
+                resultDictionary.Add("Day", GetEquityHistoryOfTransactions(dayQuotes, dayTransactions));
+                resultDictionary.Add("Week", GetEquityHistoryOfTransactions(weekQuotes, weekTransactions));
+                resultDictionary.Add("Month", GetEquityHistoryOfTransactions(monthQuotes, monthTransactions));
+                resultDictionary.Add("All", GetEquityHistoryOfTransactions(allQuotes, allTransactions));
                 return resultDictionary;
             }
         }
@@ -112,7 +127,10 @@ namespace Frugal.Controllers
             using (ITransaction trans = session.BeginTransaction())
             {
                 Models.User currentUser = UserController.CheckUserCredentials(session, HttpContext.Current.Request.Headers["Authorization"]);
-                return GetStockPortfolio(session, currentUser.Id);
+                Dictionary<string, int> portfolio = GetCurrentStockPortfolio(session, currentUser.Id);
+                
+                trans.Commit();
+                return portfolio;
             }
         }
 
@@ -129,11 +147,22 @@ namespace Frugal.Controllers
                 JObject symbolQuote = msClient.GetSymbolQuote(Symbol);
                 resultDictionary.Add("Symbol", symbolQuote["symbol"]);
                 resultDictionary.Add("CompanyName", symbolQuote["companyName"]);
-                resultDictionary.Add("CurrentPrice", msClient.GetCurrentPriceBySymbol(Symbol));
+                double currentPriceOfSymbol = msClient.GetCurrentPriceBySymbol(Symbol);
+                resultDictionary.Add("CurrentPrice", currentPriceOfSymbol);
+                SaveSymbolQuote(session, new DBModels.StockExchangeQuoteHistory() { 
+                    ID = Guid.NewGuid(),
+                    Symbol = (string) symbolQuote["symbol"],
+                    Price = currentPriceOfSymbol,
+                    Timestamp = DateTime.Now
+                });
                 resultDictionary.Add("Quote", symbolQuote);
-                resultDictionary.Add("Day", msClient.GetIntradayRaw(Symbol));
-                resultDictionary.Add("Week", msClient.GetHistoricalDataRaw(Symbol, "5dm"));
-                resultDictionary.Add("Month", msClient.GetHistoricalDataRaw(Symbol, "1mm"));
+                List<PriceInstance> intradayData = msClient.GetIntradayRaw(Symbol);
+                List<PriceInstance> weekData = msClient.GetHistoricalDataRaw(Symbol, "5dm");
+                List<PriceInstance> monthData = msClient.GetHistoricalDataRaw(Symbol, "1mm");
+                resultDictionary.Add("Day", intradayData);
+                resultDictionary.Add("Week", weekData);
+                resultDictionary.Add("Month", monthData);
+                trans.Commit();
                 return resultDictionary;
             }
         }
@@ -158,6 +187,13 @@ namespace Frugal.Controllers
                 }
                 try
                 {
+                    SaveSymbolQuote(session, new DBModels.StockExchangeQuoteHistory()
+                    {
+                        ID = Guid.NewGuid(),
+                        Symbol = transactionRequest.Symbol,
+                        Price = priceOfStockSymbol,
+                        Timestamp = DateTime.Now
+                    });
                     session.Save(new DBModels.StockExchangeTransaction()
                     {
                         ID = Guid.NewGuid(),
@@ -186,7 +222,7 @@ namespace Frugal.Controllers
             using (ITransaction trans = session.BeginTransaction())
             {
                 Models.User currentUser = UserController.CheckUserCredentials(session, HttpContext.Current.Request.Headers["Authorization"]);
-                Dictionary<string, int> portfolio = GetStockPortfolio(session, currentUser.Id);
+                Dictionary<string, int> portfolio = GetCurrentStockPortfolio(session, currentUser.Id);
                 double priceOfStockSymbol = GetCurrentSymbolPrice(transactionRequest.Symbol);
                 if (!portfolio.ContainsKey(transactionRequest.Symbol))
                 {
@@ -202,6 +238,13 @@ namespace Frugal.Controllers
                 }
                 try
                 {
+                    SaveSymbolQuote(session, new DBModels.StockExchangeQuoteHistory()
+                    {
+                        ID = Guid.NewGuid(),
+                        Symbol = transactionRequest.Symbol,
+                        Price = priceOfStockSymbol,
+                        Timestamp = DateTime.Now
+                    });
                     session.Save(new DBModels.StockExchangeTransaction()
                     {
                         ID = Guid.NewGuid(),
@@ -238,37 +281,140 @@ namespace Frugal.Controllers
             return msClient.GetEODBySymbol(Symbol);
         }*/
 
-
-        // NOT DONE YET
-        public static Dictionary<DateTime, double> GetEquityHistoryOfTransactions(List<Models.StockExchangeTransaction> transactions)
+        /*public static List<PriceInstance> StoreHistoricalDataOfSymbolIfNeeded(ISession session, string symbol)
         {
-            Dictionary<DateTime, double> resultDictionary = new Dictionary<DateTime, double>();
-            double currentEquity = 0.00;
-            foreach (var transaction in transactions)
+            MarketStackClient msClient = new MarketStackClient();
+            DBModels.StockExchangeChartSync dbStockExchangeChartSyncs = session.Query<DBModels.StockExchangeChartSync>().Where(x => x.Symbol == symbol && x.RangeFound == "intraday").FirstOrDefault();
+            if (dbStockExchangeChartSyncs == null)
             {
-                double changeFromTransaction = 0.00;
-                if (resultDictionary.ContainsKey(transaction.CreatedDate))
+                List<PriceInstance> intradayData = msClient.GetIntradayRaw(symbol);
+                foreach (var data in intradayData)
                 {
-                    resultDictionary[transaction.CreatedDate] += currentEquity;
+                    session.SaveOrUpdate(new StockExchangeChart() { 
+                        ID = Guid.NewGuid(),
+                        Symbol = symbol,
+                        RangeFound = "intraday",
+                        Open = data.open,
+                        Close = data.close,
+                        High = data.high,
+                        Low = data.low,
+                        Volume = data.volume,
+                        Timestamp = DateTime.Parse(data.date + " " + data.minute)
+                    });
+                }
+                session.SaveOrUpdate(new DBModels.StockExchangeChartSync() {
+                    ID = Guid.NewGuid(),
+                    Symbol = symbol,
+                    RangeFound = "intraday",
+                    LastUpdatedTimestamp = DateTime.Now
+                });
+            }
+            else
+            {
+                if (latestUpdate < DateTimeHandler.GetEpochOfDateTime(dbStockExchangeChartSyncs.LastUpdatedTimestamp))
+                {
+                    dbStockExchangeChartSyncs.LastUpdatedTimestamp = DateTime.Now;
+                    session.SaveOrUpdate(dbStockExchangeChartSyncs);
                 }
                 else
                 {
-                    resultDictionary[transaction.CreatedDate] = currentEquity;
+                    DateTime latestChartOfSymbol = session.QueryOver<DBModels.StockExchangeChart>().Where(x => x.Symbol == symbol && x.RangeFound == "intraday").OrderBy(x => x.Timestamp).Desc.List().FirstOrDefault().Timestamp;
+                    if (latestChartOfSymbol == dbStockExchangeChartSyncs.LastUpdatedTimestamp)
+                    {
+
+                    }
+                    IEnumerable<DBModels.StockExchangeChart> dbStockExchangeCharts = session.QueryOver<DBModels.StockExchangeChart>().Where(x => x.Symbol == symbol && x.RangeFound == "intraday").OrderBy(x => x.Timestamp).Asc.List();
+                    
+                    List<PriceInstance> intradayData = msClient.GetIntradayRaw(symbol);
                 }
+            }
+        }*/
+
+        public static void StoreQuoteToHistory(ISession session, DBModels.StockExchangeQuoteHistory quote)
+        {
+            session.SaveOrUpdate(quote);
+        }
+
+        // NOT DONE YET
+        public static Dictionary<DateTime, double> GetEquityHistoryOfTransactions(List<Models.StockExchangeQuoteHistory> quotes, List<Models.StockExchangeTransaction> transactions)
+        {
+            Dictionary<DateTime, double> resultDictionary = new Dictionary<DateTime, double>();
+
+            Dictionary<DateTime, Models.StockExchangePortfolio> equityDictionary = new Dictionary<DateTime, Models.StockExchangePortfolio>();
+            Models.StockExchangePortfolio previousPortfolio = null;
+            foreach (var transaction in transactions)
+            {
+                if (previousPortfolio == null)
+                {
+                    previousPortfolio = new Models.StockExchangePortfolio()
+                    {
+                        CurrencyAmount = 0,
+                        Stocks = new Dictionary<string, int>(),
+                        StockPrices = new Dictionary<string, double>(),
+                        Timestamp = DateTime.Now
+                    };
+                }
+                Models.StockExchangePortfolio currentPortfolio = previousPortfolio;
                 if (transaction.Type == "ADD")
                 {
-                    changeFromTransaction += NullHandler.GetZeroIfNull(transaction.CurrencyAmount);
+                    currentPortfolio.CurrencyAmount += NullHandler.GetZeroIfNull(transaction.CurrencyAmount);
                 }
                 else if (transaction.Type == "BUY")
                 {
-                    changeFromTransaction -= NullHandler.GetZeroIfNull(transaction.StockRate) * NullHandler.GetZeroIfNull(transaction.StockAmount);
+                    currentPortfolio.CurrencyAmount -= (NullHandler.GetZeroIfNull(transaction.StockAmount) * NullHandler.GetZeroIfNull(transaction.StockRate));
+                    if (currentPortfolio.Stocks.ContainsKey(transaction.Symbol))
+                    {
+                        currentPortfolio.Stocks[transaction.Symbol] += NullHandler.GetZeroIfNull(transaction.StockAmount);
+                    }
+                    else
+                    {
+                        currentPortfolio.Stocks[transaction.Symbol] = NullHandler.GetZeroIfNull(transaction.StockAmount);
+                    }
+                    currentPortfolio.StockPrices[transaction.Symbol] = NullHandler.GetZeroIfNull(transaction.StockRate);
                 }
                 else if (transaction.Type == "SELL")
                 {
-                    changeFromTransaction += NullHandler.GetZeroIfNull(transaction.StockRate) * NullHandler.GetZeroIfNull(transaction.StockAmount);
+                    if (previousPortfolio.Stocks.ContainsKey(transaction.Symbol))
+                    {
+                        currentPortfolio.Stocks[transaction.Symbol] -= NullHandler.GetZeroIfNull(transaction.StockAmount);
+                    }
+                    else
+                    {
+                        currentPortfolio.Stocks[transaction.Symbol] = -1 * NullHandler.GetZeroIfNull(transaction.StockAmount);
+                    }
+                    currentPortfolio.CurrencyAmount -= (NullHandler.GetZeroIfNull(transaction.StockAmount) * NullHandler.GetZeroIfNull(transaction.StockRate));
+                    currentPortfolio.StockPrices[transaction.Symbol] = NullHandler.GetZeroIfNull(transaction.StockRate);
+                }
+                if (equityDictionary.ContainsKey(transaction.CreatedDate))
+                {
+                    equityDictionary[transaction.CreatedDate] = new Models.StockExchangePortfolio() { 
+                        CurrencyAmount = equityDictionary[transaction.CreatedDate].CurrencyAmount + NullHandler.GetZeroIfNull(transaction.CurrencyAmount),
+                        Stocks = DictionaryHandler.AddTwoDictionaries(equityDictionary[transaction.CreatedDate].Stocks, currentPortfolio.Stocks),
+                        StockPrices = currentPortfolio.StockPrices,
+                        Timestamp = transaction.CreatedDate
+                    };
+                }
+                else
+                {
+                    equityDictionary[transaction.CreatedDate] = currentPortfolio;
+                }
+                previousPortfolio = currentPortfolio;
+            }
+            foreach (var quote in quotes)
+            {
+                if (equityDictionary.ContainsKey(quote.Timestamp))
+                {
+                    equityDictionary[quote.Timestamp].StockPrices[quote.Symbol] = quote.Price;
+                }
+                else
+                {
+                    equityDictionary[quote.Timestamp] = new Models.StockExchangePortfolio()
+                    {
+                        
+                    };
                 }
             }
-            return null;
+            return resultDictionary;
         }
 
         public static Dictionary<DateTime, double> AppendOnToKeyOrCreate(Dictionary<DateTime, double> dictionary, DateTime key, double number, bool subtract)
@@ -298,35 +444,65 @@ namespace Frugal.Controllers
             return dictionary;
         }
 
+        public static void SaveSymbolQuote(ISession session, DBModels.StockExchangeQuoteHistory quote)
+        {
+            DBModels.StockExchangeQuoteHistory dbStockExchangeQuoteHistory = session.QueryOver<DBModels.StockExchangeQuoteHistory>().Where(x => x.Symbol == quote.Symbol).OrderBy(x => x.Timestamp).Desc.List().FirstOrDefault();
+            if (dbStockExchangeQuoteHistory == null || dbStockExchangeQuoteHistory.Price != quote.Price)
+            {
+                session.SaveOrUpdate(quote);
+            }
+        }
+
         public static double GetCurrentSymbolPrice(string symbol)
         {
             MarketStackClient msClient = new MarketStackClient();
             return msClient.GetCurrentPriceBySymbol(symbol);
         }
 
-        public static Dictionary<string, int> GetStockPortfolio(ISession session, Guid userId)
+        public static Dictionary<string, int> GetCurrentStockPortfolio(ISession session, Guid userId)
+        {
+            Dictionary<string, int> resultDictionary = new Dictionary<string, int>();
+            Dictionary<string, int> allPortfolioOwned = GetAllEverOwnerStockPortfolio(session, userId);
+            foreach (KeyValuePair<string, int> portfolioPair in allPortfolioOwned)
+            {
+                if (portfolioPair.Value != 0)
+                {
+                    resultDictionary.Add(portfolioPair.Key, portfolioPair.Value);
+                    SaveSymbolQuote(session, new DBModels.StockExchangeQuoteHistory()
+                    {
+                        ID = Guid.NewGuid(),
+                        Symbol = portfolioPair.Key,
+                        Price = GetCurrentSymbolPrice(portfolioPair.Key),
+                        Timestamp = DateTime.Now
+                    });
+                }
+            }
+            return resultDictionary;
+        }
+
+        public static Dictionary<string, int> GetAllEverOwnerStockPortfolio(ISession session, Guid userId)
         {
             IEnumerable<DBModels.StockExchangeTransaction> dbStockExchangeTransactions = session.Query<DBModels.StockExchangeTransaction>().Where(x => x.UserID == userId);
-            Dictionary<string, int> resultPortfolio = new Dictionary<string, int>();
+            Dictionary<string, int> allPortfolioOwned = new Dictionary<string, int>();
             foreach (var stockExchangeTran in dbStockExchangeTransactions)
             {
                 if (stockExchangeTran.Type == "BUY" || stockExchangeTran.Type == "SELL")
                 {
-                    if (!resultPortfolio.ContainsKey(stockExchangeTran.Symbol))
+                    if (!allPortfolioOwned.ContainsKey(stockExchangeTran.Symbol))
                     {
-                        resultPortfolio[stockExchangeTran.Symbol] = 0;
+                        allPortfolioOwned[stockExchangeTran.Symbol] = 0;
                     }
                     if (stockExchangeTran.Type == "BUY")
                     {
-                        resultPortfolio[stockExchangeTran.Symbol] += NullHandler.GetZeroIfNull(stockExchangeTran.StockAmount);
+                        allPortfolioOwned[stockExchangeTran.Symbol] += NullHandler.GetZeroIfNull(stockExchangeTran.StockAmount);
                     }
                     else if (stockExchangeTran.Type == "SELL")
                     {
-                        resultPortfolio[stockExchangeTran.Symbol] -= NullHandler.GetZeroIfNull(stockExchangeTran.StockAmount);
+                        allPortfolioOwned[stockExchangeTran.Symbol] -= NullHandler.GetZeroIfNull(stockExchangeTran.StockAmount);
                     }
                 }
             }
-            return resultPortfolio;
+            return allPortfolioOwned;
         }
 
         public static double GetBuyingPowerByUser(ISession session, Guid userId)
@@ -341,6 +517,22 @@ namespace Frugal.Controllers
                 }
             }
             return resultBuyingPower;
+        }
+
+        public static List<Models.StockExchangeQuoteHistory> DBModelToModel(IEnumerable<DBModels.StockExchangeQuoteHistory> dbQuoteHistories)
+        {
+            List<Models.StockExchangeQuoteHistory> resultQuoteHistory = new List<Models.StockExchangeQuoteHistory>();
+            foreach (var quoteHistory in dbQuoteHistories)
+            {
+                resultQuoteHistory.Add(new Models.StockExchangeQuoteHistory()
+                {
+                    Id = quoteHistory.ID,
+                    Symbol = quoteHistory.Symbol,
+                    Price = quoteHistory.Price,
+                    Timestamp = quoteHistory.Timestamp
+                });
+            }
+            return resultQuoteHistory;
         }
 
         public static Models.StockExchangeTransaction StockExchangeTransactionDBModelToModel(DBModels.StockExchangeTransaction stockExchangeTransaction)
