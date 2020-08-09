@@ -14,7 +14,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpInterceptorService } from './services/http-interceptor.service';
 import { Globals } from './globals';
 import { SharedModule } from './shared.module';
-import { InvestingComponent } from './investing/investing.component';
+import { InvestingComponent } from './pages/investing/investing.component';
+import { MainMenuModule } from './main-menu/main-menu.module';
 
 @NgModule({
   declarations: [AppComponent, InvestingComponent],
@@ -26,6 +27,7 @@ import { InvestingComponent } from './investing/investing.component';
     HttpClientModule,
     AppRoutingModule,
     IonicStorageModule.forRoot(),
+    MainMenuModule,
     SharedModule
   ],
   providers: [

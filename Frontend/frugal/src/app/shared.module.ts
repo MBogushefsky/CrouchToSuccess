@@ -1,10 +1,14 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { MainMenuComponent } from './main-menu/main-menu.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [
+  ],
   imports: [
     CommonModule
+  ],
+  exports: [
   ]
 })
 export class SharedModule { }

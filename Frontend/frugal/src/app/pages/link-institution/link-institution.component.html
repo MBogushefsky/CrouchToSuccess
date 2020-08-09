@@ -1,0 +1,28 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Link Bank Institution</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="content-with-background">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Link Bank Institution</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div id="container">
+    <ion-card>
+      <ion-card-content>
+        <div *ngIf="isLinkingBankInstitution" id="container-fastlink"></div>
+        <ion-button *ngIf="!isLinkingBankInstitution" (click)="linkBankInstitution()" color="primary" expand="block">Link</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+  <ng-container *ngIf="isLoading">
+    <ion-spinner class="progress-spinner" name="circles"></ion-spinner>
+  </ng-container>
+</ion-content>

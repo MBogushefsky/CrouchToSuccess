@@ -1,0 +1,41 @@
+<ion-content style="--padding-top: 0px; height: 100vh;">
+  <ion-img style="width: 150px; height: 75px;" src="../../assets/InApplicationLogo.png"></ion-img>
+  <ion-list-header class="main-menu-name-header">Welcome {{ globals.userToken.FirstName }} {{ globals.userToken.LastName }}!</ion-list-header>
+  <ion-item-divider></ion-item-divider>
+  <ion-list id="main-menu-list">
+    <ion-menu-toggle auto-hide="false">
+      <ion-item *ngFor="let p of appPages; let i = index" (click)="selectedPage = p.url" routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" [class.selected]="selectedPage == p.url">
+        <ion-icon slot="start" [name]="p.icon"></ion-icon>
+        <ion-label>{{ p.title }}</ion-label>
+      </ion-item>
+      <ion-item style="color: gray;" lines="none" detail="false">
+        <ion-icon slot="start" name="link"></ion-icon>
+        <ion-label>Link Bank Account (Unavailable)</ion-label>
+      </ion-item>
+      <ion-item (click)="logout()" style="cursor: pointer;" lines="none" detail="false">
+        <ion-icon slot="start" name="log-out"></ion-icon>
+        <ion-label>Logout</ion-label>
+      </ion-item>
+    </ion-menu-toggle>
+  </ion-list>
+  <ng-container *ngIf="globals.linkedBankAccounts != null">
+    <ion-list id="bank-account-list">
+      <ion-list-header>Bank Accounts</ion-list-header>
+      <ng-container *ngFor="let bankAccount of globals.linkedBankAccounts">
+        <ion-item *ngIf="bankAccount.Type != 'credit'" lines="none" [routerLink]="['bank-account/' + bankAccount.Id]">
+          <ion-icon slot="start" name="cash"></ion-icon>
+          <ion-label>{{bankAccount.InstitutionId}}: {{ bankAccount.Name }} ({{ bankAccount.CurrentBalance | currency }})</ion-label>
+        </ion-item>
+      </ng-container>
+    </ion-list>
+    <ion-list id="bank-account-list">
+      <ion-list-header>Credit Cards</ion-list-header>
+      <ng-container *ngFor="let bankAccount of globals.linkedBankAccounts">
+        <ion-item *ngIf="bankAccount.Type == 'credit'" lines="none" [routerLink]="['bank-account/' + bankAccount.Id]">
+          <ion-icon slot="start" name="card"></ion-icon>
+          <ion-label>{{bankAccount.InstitutionId}}: {{ bankAccount.Name }} ({{ bankAccount.CurrentBalance | currency }} To Pay)</ion-label>
+        </ion-item>
+      </ng-container>              
+    </ion-list>
+  </ng-container>
+</ion-content>

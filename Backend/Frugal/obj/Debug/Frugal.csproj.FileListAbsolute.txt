@@ -130,3 +130,4 @@ C:\Projects\Frugal\Backend\Frugal\bin\zh-Hant\Microsoft.Build.resources.dll
 C:\Projects\Frugal\Backend\Frugal\obj\Debug\Frugal.csproj.CopyComplete
 C:\Projects\Frugal\Backend\Frugal\obj\Debug\Monier.dll
 C:\Projects\Frugal\Backend\Frugal\obj\Debug\Monier.pdb
+C:\Projects\Frugal\Backend\Frugal\obj\Debug\Frugal.csprojAssemblyReference.cache

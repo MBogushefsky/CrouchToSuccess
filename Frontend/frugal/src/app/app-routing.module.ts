@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { InvestingComponent } from './investing/investing.component';
+import { InvestingComponent } from './pages/investing/investing.component';
 
 const routes: Routes = [
   {
@@ -10,7 +10,7 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+    loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
   },
   {
     path: 'investing',
@@ -21,7 +21,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: './investing/dashboard/dashboard.module#DashboardModule'
+            loadChildren: './pages/investing/dashboard/dashboard.module#DashboardModule'
           }
         ]
       },
@@ -30,7 +30,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: './investing/search/search.module#SearchModule'
+            loadChildren: './pages/investing/search/search.module#SearchModule'
           }
         ]
       },
@@ -43,23 +43,19 @@ const routes: Routes = [
   },
   {
     path: 'settings',
-    loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule)
+    loadChildren: () => import('./pages/settings/settings.module').then(m => m.SettingsModule)
   },
   {
     path: 'link-institution',
-    loadChildren: () => import('./link-institution/link-institution.module').then(m => m.LinkInstitutionModule)
-  },
-  {
-    path: 'folder/:id',
-    loadChildren: () => import('./folder/folder.module').then(m => m.FolderPageModule)
+    loadChildren: () => import('./pages/link-institution/link-institution.module').then(m => m.LinkInstitutionModule)
   },
   {
     path: 'bank-account/:id',
-    loadChildren: () => import('./bank-account/bank-account.module').then(m => m.BankAccountModule)
+    loadChildren: () => import('./pages/bank-account/bank-account.module').then(m => m.BankAccountModule)
   },
   {
     path: 'bank-account/:id/transactions',
-    loadChildren: () => import('./transaction-list/transaction-list.module').then(m => m.TransactionListModule)
+    loadChildren: () => import('./pages/transaction-list/transaction-list.module').then(m => m.TransactionListModule)
   }
 ];
 

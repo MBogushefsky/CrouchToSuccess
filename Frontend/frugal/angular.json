@@ -42,7 +42,10 @@
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/primeicons/primeicons.css"
             ],
-            "scripts": []
+            "scripts": [
+              { "input": "src/assets/plaid/link-initialize.js", "bundleName": "plaid-link-initialize" },
+              "src/assets/yodlee/initialize.js"
+            ]
           },
           "configurations": {
             "production": {

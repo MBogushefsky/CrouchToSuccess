@@ -32,29 +32,7 @@ export class AppComponent implements OnInit {
     Admin: false
   };
   public inSignUp = false;
-  public selectedPage: string;
-  public appPages = [
-    {
-      title: 'Home',
-      url: '/home',
-      icon: 'home'
-    },
-    {
-      title: 'Investing',
-      url: '/investing/dashboard',
-      icon: 'bar-chart-outline'
-    },
-    {
-      title: 'Settings',
-      url: '/settings',
-      icon: 'hammer'
-    },
-    {
-      title: 'Link Bank Institution',
-      url: '/link-institution',
-      icon: 'link'
-    }
-  ];
+  
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
   constructor(
@@ -82,11 +60,6 @@ export class AppComponent implements OnInit {
   }
 
   initializeLoggedInState(){
-    const path = window.location.pathname.split('/')[1];
-    if (path !== undefined) {
-      this.selectedPage = '/' + path;
-      //this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
-    }
     this.storage.get('user_token').then((val) => {
       console.log('Your user token is', val);
       this.globals.userToken = val;
@@ -117,7 +90,6 @@ export class AppComponent implements OnInit {
           this.globals.userToken = data;
           this.initializeLoggedInState();
         });
-        
       },
       (error: HttpErrorResponse) => {
         console.log('Error: ', error.message);
@@ -158,10 +130,6 @@ export class AppComponent implements OnInit {
     });
     handler.open();
     
-  }
-
-  logout() {
-    this.globals.logOut();
   }
 
   signUp() {
