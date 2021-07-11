@@ -1,0 +1,28 @@
+﻿<Properties StartupConfiguration="{56E2484D-8DAF-47CD-B130-94AB2376FFE7}|">
+  <MonoDevelop.Ide.ItemProperties.Frugal PreferredExecutionTarget="/Applications/Google Chrome.app" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Controllers/HomeController.cs">
+    <Files>
+      <File FileName="Controllers/UserController.cs" Line="1" Column="1" />
+      <File FileName="Controllers/BankAccountController.cs" />
+      <File FileName="Controllers/StatisticController.cs" />
+      <File FileName="Controllers/HomeController.cs" Line="15" Column="7" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Frugal" expanded="True" selected="True">
+            <Node name="Frugal" expanded="True">
+              <Node name="Controllers" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

@@ -1,0 +1,31 @@
+﻿<Properties StartupConfiguration="{56E2484D-8DAF-47CD-B130-94AB2376FFE7}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Controllers/BankAccountController.cs">
+    <Files>
+      <File FileName="Controllers/UserController.cs" Line="1" Column="1" />
+      <File FileName="Controllers/BankAccountController.cs" Line="8" Column="18" />
+      <File FileName="Controllers/StatisticController.cs" />
+      <File FileName="Controllers/HomeController.cs" Line="3" Column="19" />
+      <File FileName="CouchToSuccess.csproj" Line="393" Column="11" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="CouchToSuccess" expanded="True">
+            <Node name="CouchToSuccess" expanded="True">
+              <Node name="Controllers" expanded="True">
+                <Node name="BankAccountController.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.CouchToSuccess PreferredExecutionTarget="/Applications/Google Chrome.app" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
